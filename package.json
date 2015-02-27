@@ -1,0 +1,21 @@
+{
+  "name": "matrix-appservice",
+  "version": "0.0.0",
+  "description": "Matrix Application Service Framework",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "matrix-org"
+  ],
+  "author": "matrix.org",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "morgan": "~1.5.1",
+    "express": "~4.12.0"
+  }
+}

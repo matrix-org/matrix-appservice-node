@@ -2,6 +2,7 @@
 
 var express = require("express");
 var morgan = require("morgan");
+var q = require("q");
 var controller = require("./controllers/index.js");
 var asapi = require("./controllers/asapi.js");
 var config = require("./config");
@@ -22,7 +23,17 @@ asapi.register("http://localhost:8008", "http://localhost:3000", config.applicat
 },
 function(err) {
     console.error(err);
-})
+});
+
+asapi.addQueryHandler({
+    name: "test",
+    type: "user"
+}, function(userId) {
+    if (userId.length == 5) {
+        return q("yep");
+    }
+    return q.reject("narp");
+});
 
 var server = app.listen(config.port || 3000, function() {
     var host = server.address().address;

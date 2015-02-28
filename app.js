@@ -3,34 +3,17 @@
 var express = require("express");
 var morgan = require("morgan");
 var q = require("q");
-var controller = require("./controllers/index.js");
-var asapi = require("./controllers/asapi.js");
 var config = require("./config");
 var app = express();
 
 app.use(morgan("combined"));
-controller.setRoutes(app);
-
-// low-level direct HTTP call (no state handling whatsoever)
-asapi.register(config.homeServerUrl, config.applicationServiceUrl, config.applicationServiceToken, {
-    users: [
-        "@test_.*"
-    ],
-    aliases: [
-        "#test_.*"
-    ]
-}).then(function(hsToken) {
-    console.log("Got token: "+hsToken);
-},
-function(err) {
-    console.error(err);
-});
-
 
 // higher-level hooks
+var controller = require("./controllers/index.js");
+controller.setRoutes(app);
 controller.asapi.addQueryHandler({
     name: "test",
-    type: "user"
+    type: "users"
 }, function(userId) {
     if (userId.length == 5) {
         return q("yep");

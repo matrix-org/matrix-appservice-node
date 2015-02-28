@@ -14,18 +14,23 @@ var askHandlers = function(resolvers, param) {
 function AsapiController(asapi) {
     this.asapi = asapi;
     this.queryResolvers = {
-        user: {
+        users: {
         //   resolverName: fn
         },
-        alias: {
+        aliases: {
         //   resolverName: fn    
         }
     };
+    this.namespaces = {
+        users:[],
+        aliases:[],
+        rooms:[]
+    }
     this.requestHandler = new asapi.AsapiRequestHandler();
     var that = this;
     this.requestHandler.user = function(userId) {
         var defer = q.defer();
-        askHandlers(that.queryResolvers.user, userId).then(function() {
+        askHandlers(that.queryResolvers.users, userId).then(function() {
             defer.resolve("OK");
         },
         function(err) {
@@ -35,7 +40,7 @@ function AsapiController(asapi) {
     };
     this.requestHandler.alias = function(roomAlias) {
         var defer = q.defer();
-        askHandlers(that.queryResolvers.alias, roomAlias).then(function() {
+        askHandlers(that.queryResolvers.aliases, roomAlias).then(function() {
             defer.resolve("OK");
         },
         function(err) {
@@ -45,6 +50,15 @@ function AsapiController(asapi) {
     };
 };
 
+/*
+ * Add a generic query handler for incoming queries.
+ * @param {Object} opts The query options which must have a "name" for the
+ * handler, as well as a "type" which is either "users" or "aliases".
+ * @param {Function} fn The function to invoke when there is a query. The first
+ * arg will contain the ID being queried (user ID, room alias). This function
+ * should return a Promise which is resolved if the query was successful, or
+ * rejected if the query was not successful.
+ */
 AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
     var check = function(opts, key, keyType) {
         if (!opts[key]) {
@@ -62,11 +76,18 @@ AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
         return;
     }
 
-    if (["user", "alias"].indexOf(opts["type"]) == -1) {
-        console.error("'type' must be 'user' or 'alias'");
+    if (["users", "aliases"].indexOf(opts["type"]) == -1) {
+        console.error("'type' must be 'users' or 'aliases'");
         return;
     }
     this.queryResolvers[opts["type"]][opts["name"]] = fn;
+    if (opts["regex"]) {
+        this.namespaces[opts["type"]].push(opts["regex"]);
+    }
+};
+
+AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {
+    return this.asapi.register(hsUrl, asUrl, asToken, this.namespaces);
 };
 
 module.exports = AsapiController;

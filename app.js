@@ -11,7 +11,8 @@ var app = express();
 app.use(morgan("combined"));
 controller.setRoutes(app);
 
-asapi.register("http://localhost:8008", "http://localhost:3000", config.applicationServiceToken, {
+// low-level direct HTTP call (no state handling whatsoever)
+asapi.register(config.homeServerUrl, config.applicationServiceUrl, config.applicationServiceToken, {
     users: [
         "@test_.*"
     ],
@@ -25,7 +26,9 @@ function(err) {
     console.error(err);
 });
 
-asapi.addQueryHandler({
+
+// higher-level hooks
+controller.asapi.addQueryHandler({
     name: "test",
     type: "user"
 }, function(userId) {

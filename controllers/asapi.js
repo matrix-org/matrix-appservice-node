@@ -3,46 +3,31 @@
 var request = require("request");
 var url = require("url");
 var q = require("q");
-var events = require("events");
 
 var PREFIX = "/_matrix/appservice/v1";
 
-var queryResolvers = {
-    user: {
-    //   resolverName: fn
-    },
-    alias: {
-    //   resolverName: fn    
+function AsapiRequestHandler() {
+    this.user = function(userId) {
+        return q({});
+    };
+    this.alias = function(roomAlias) {
+        return q({});
     }
 };
+module.exports.AsapiRequestHandler = AsapiRequestHandler;
 
-var askHandlers = function(resolvers, param) {
-    var promises = [];
-    Object.keys(resolvers).forEach(function(key) {
-        promises.push(resolvers[key](param));
-    })
-    return q.all(promises);
-};
-
-module.exports.setRoutes = function(app) {
+module.exports.setRoutes = function(app, asapiRequestHandler) {
     app.get("/users/:userId", function(req, res) {
-        var promise = askHandlers(queryResolvers.user, req.params.userId);
-        promise.then(function() {
-            res.send("OK");
+        asapiRequestHandler.user(req.params.userId).then(function(suc) {
+            res.send(suc);
         },
-        function(err) {
-            res.send("NOK");
+        function(err){
+            res.send(err);
         });
     });
 
     app.get("/rooms/:alias", function(req, res) {
-        var promise = askHandlers(queryResolvers.alias, req.params.alias);
-        promise.then(function() {
-            res.send("OK");
-        },
-        function(err) {
-            res.send("NOK");
-        });
+        asapiRequestHandler.alias(req.params.alias, req, res);
     });
 
     app.put("/transactions/:txnId", function(req, res) {
@@ -90,26 +75,3 @@ module.exports.unregister = function(hsUrl, asToken) {
     return defer.promise;
 };
 
-module.exports.addQueryHandler = function(opts, fn) {
-    var check = function(opts, key, keyType) {
-        if (!opts[key]) {
-            console.error("addQueryHandler: opts must supply a '%s'", key);
-            return false;
-        }
-        if (keyType && typeof opts[key] != keyType) {
-            console.error("addQueryHandler: %s must be a %s", key, keyType);
-            return false;
-        }
-        return true;
-    };
-
-    if (!check(opts, "name", "string") || !check(opts, "type", "string")) {
-        return;
-    }
-
-    if (["user", "alias"].indexOf(opts["type"]) == -1) {
-        console.error("'type' must be 'user' or 'alias'");
-        return;
-    }
-    queryResolvers[opts["type"]][opts["name"]] = fn;
-};

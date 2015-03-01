@@ -136,3 +136,9 @@ Controllers
 ``storage-controller //TODO`` : This controller stores incoming events for retrieval and searching at a later date. It is backed by MongoDB.
 
 ``client-controller //TODO`` : This controller exposes the "extended" client-server HTTP API for application services.
+
+Emitted Events
+--------------
+``asapi-controller`` will emit Node.js events when incoming events are sent to the AS by the HS. The list of possible events are:
+ - ``event`` : A generic catch-all which is emitted for every incoming event.
+ - ``type:[event.type]`` : An event emitted for the specified type e.g. ``type:m.room.message``

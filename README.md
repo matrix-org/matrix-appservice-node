@@ -80,9 +80,9 @@ app.listen(3000);
 Services
 --------
 
-Services use ``controllers`` to perform something useful, such as integrating with a specific third-party API, or providing a well-defined feature. For this example, we'll make a service which just logs messages.
+Services are built on top of ``controllers`` to perform something useful, such as integrating with a specific third-party API, or providing a well-defined feature. All services must be built on top of the core controller: ``asapi-controller`` in order for them to receive events and queries from Express. For this example, we'll make a service which just logs messages.
 
-Create a ``service`` which can register itself with a ``controller``:
+Create a ``service`` which can register itself with ``asapi-controller``:
 
 ``` javascript
 // logging.js
@@ -92,15 +92,15 @@ var aliasHandler = function(roomAlias) {
     // create a room for this alias
 };
 
-module.exports.register = function(app, controller) {
-    controller.addQueryHandler({
+module.exports.register = function(app, asapiController) {
+    asapiController.addQueryHandler({
         name: "name of the service",
         type: "aliases",
         regex: "#log_.*",
     }, aliasHandler);
 
     // listen for m.room.message events to log
-    controller.on("type:m.room.message", function(event) {
+    asapiController.on("type:m.room.message", function(event) {
         console.log("Logging => %s", JSON.stringify(event));
     });
 };

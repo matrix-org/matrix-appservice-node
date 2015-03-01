@@ -14,6 +14,10 @@ var aliasHandler = function(roomAlias) {
     return q("loggingService: yep");
 };
 
+var handleEvent = function(event) {
+    console.log("RECV %s", JSON.stringify(event));
+};
+
 
 module.exports.register = function(app, controller) {
     controller.addQueryHandler({
@@ -22,5 +26,6 @@ module.exports.register = function(app, controller) {
         regex: ALIASES
     }, aliasHandler);
 
-    // TODO listen for m.room.message events to log
+    // listen for m.room.message events to log
+    controller.on("type:m.room.message", handleEvent);
 };

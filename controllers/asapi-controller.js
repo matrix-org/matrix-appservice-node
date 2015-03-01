@@ -1,7 +1,8 @@
 "use strict";
 
 var q = require("q");
-var events = require("events");
+var util = require("util");
+var EventEmitter = require("events").EventEmitter;
 
 var askHandlers = function(resolvers, param) {
     var promises = [];
@@ -56,10 +57,16 @@ function AsapiController(asapi) {
             return q.reject("Bad token");
         }
         // TODO if processed this txnId then ignore it and return success.
-        // TODO pass events on to interested listeners (emit events?).
+        for (var i=0; i<events.length; i++) {
+            that.emit("event", events[i]);
+            if (events[i].type) {
+                that.emit("type:"+events[i].type, events[i]);
+            }
+        }
         return q("Yep");
     };
 };
+util.inherits(AsapiController, EventEmitter);
 
 /*
  * Add a generic query handler for incoming queries.

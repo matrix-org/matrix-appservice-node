@@ -6,7 +6,9 @@ Usage
 =====
 
 The framework is primarily used by using ``controllers`` which add core functionality onto the raw AS HTTP
-API calls:
+API calls. Controllers automatically control common aspects of AS API development, such as checking home
+server tokens, checking for duplicate transactions, etc. They also provide a modular way to add 
+functionality on top of the AS API:
 
 ``` javascript
 var express = require("express");
@@ -37,7 +39,7 @@ controller.register("http://localhost:8008", "http://localhost:3000", "123456789
 app.listen(3000);
 ```
 
-Alternatively, to do the bare minimum HTTP calls required by the AS API specification, you can use the ``asapi`` module. This does not handle anything for you: it simply wraps the HTTP calls and presents a promise interface (using ``Q``).
+Alternatively, to do the bare minimum HTTP calls required by the AS API specification, you can use the ``asapi`` module. This does not handle anything for you: it simply wraps the HTTP calls and presents a promise interface (using ``Q``). You will be responsible for checking tokens, preventing duplicate transactions, etc.
 
 ``` javascript
 var express = require("express");

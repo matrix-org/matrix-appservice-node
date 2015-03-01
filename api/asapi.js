@@ -36,7 +36,17 @@ function AsapiRequestHandler() {
      */
     this.alias = function(roomAlias) {
         return q({});
-    }
+    };
+
+    /*
+     * Handle a set of incoming events.
+     * @param {Array<Event>} events a list of incoming events.
+     * @param {String} txnId The transaction ID for this set of events.
+     * @param {String} hsToken The home server access token.
+     */
+    this.transaction = function(events, txnId, hsToken) {
+        return q({});
+    };
 };
 module.exports.AsapiRequestHandler = AsapiRequestHandler;
 
@@ -57,11 +67,35 @@ module.exports.setRoutes = function(app, asapiRequestHandler) {
     });
 
     app.get("/rooms/:alias", function(req, res) {
-        asapiRequestHandler.alias(req.params.alias, req, res);
+        asapiRequestHandler.alias(req.params.alias).then(function(suc) {
+            res.send(suc);
+        },
+        function(err) {
+            res.send(err);
+        });
     });
 
     app.put("/transactions/:txnId", function(req, res) {
-        res.send("txn not implemented " + req.params.txnId);
+        var hsToken = req.query.access_token;
+        var txnId = req.params.txnId;
+        if (!hsToken || !txnId) {
+            res.send("Missing token or transaction ID.");
+            return;
+        }
+        console.log(req.body);
+        if (!req.body || !req.body.events) {
+            res.send("Missing events body.");
+            return;
+        }
+        var events = req.body.events;
+        asapiRequestHandler.transaction(events, txnId, hsToken).then(
+            function(suc) {
+                res.send(suc);
+            },
+            function(err) {
+                res.send(err);
+            }
+        );
     });
 };
 
@@ -83,6 +117,7 @@ module.exports.register = function(hsUrl, asUrl, asToken, namespaces) {
         as_token: asToken,
         namespaces: namespaces
     };
+    console.log("/register => %s", JSON.stringify(body));
     var defer = q.defer();
     request.post(endpoint, {json: body}, function(error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -109,6 +144,7 @@ module.exports.unregister = function(hsUrl, asToken) {
     var body = {
         as_token: asToken
     };
+    console.log("/unregister => %s", JSON.stringify(body));
     var defer = q.defer();
     request.post(endpoint, {json: body}, function(error, response, body) {
         if (!error && response.statusCode == 200) {

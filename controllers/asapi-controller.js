@@ -25,7 +25,8 @@ function AsapiController(asapi) {
         users:[],
         aliases:[],
         rooms:[]
-    }
+    };
+    this.hsToken = undefined;
     this.requestHandler = new asapi.AsapiRequestHandler();
     var that = this;
     this.requestHandler.user = function(userId) {
@@ -47,6 +48,16 @@ function AsapiController(asapi) {
             defer.reject("NOK");
         });
         return defer.promise;
+    };
+    this.requestHandler.transaction = function(events, txnId, hsToken) {
+        // verify the home server token
+        if (hsToken != that.hsToken) {
+            console.error("Invalid homeserver token");
+            return q.reject("Bad token");
+        }
+        // TODO if processed this txnId then ignore it and return success.
+        // TODO pass events on to interested listeners (emit events?).
+        return q("Yep");
     };
 };
 
@@ -87,7 +98,15 @@ AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
 };
 
 AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {
-    return this.asapi.register(hsUrl, asUrl, asToken, this.namespaces);
+    var defer = q.defer();
+    var that = this;
+    this.asapi.register(hsUrl, asUrl, asToken, this.namespaces).then(function(hsToken) {
+        that.hsToken = hsToken;
+        defer.resolve(hsToken);
+    }, function(err) {
+        defer.reject(err);
+    });
+    return defer.promise;
 };
 
 module.exports = AsapiController;

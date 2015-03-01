@@ -5,7 +5,9 @@ This can be used to quickly setup performant application services for almost any
 Usage
 =====
 
-The framework is primarily used by using ``controllers`` which add core functionality onto the raw AS HTTP
+The main use for this framework is for creating new ``services`` which interact with third-party APIs.
+
+The framework is primarily compromised of ``controllers`` which add core functionality onto the raw AS HTTP
 API calls. Controllers automatically control common aspects of AS API development, such as checking home
 server tokens, checking for duplicate transactions, etc. They also provide a modular way to add 
 functionality on top of the AS API:
@@ -78,7 +80,7 @@ app.listen(3000);
 Services
 --------
 
-Services use ``controllers`` to perform something useful, such as integrating with a specific third-party API, or providing a core piece of functionality. For this example, we'll make a service which just logs messages.
+Services use ``controllers`` to perform something useful, such as integrating with a specific third-party API, or providing a well-defined feature. For this example, we'll make a service which just logs messages.
 
 Create a ``service`` which can register itself with a ``controller``:
 
@@ -98,6 +100,9 @@ module.exports.register = function(app, controller) {
     }, aliasHandler);
 
     // listen for m.room.message events to log
+    controller.on("type:m.room.message", function(event) {
+        console.log("Logging => %s", JSON.stringify(event));
+    });
 };
 ```
 
@@ -105,6 +110,8 @@ Then register the service with an ``AsapiController``:
 
 ``` javascript
 var app = express();
+
+// link the asapi api with an express app and asapi controller
 var AsapiController = require("./controllers/asapi-controller.js");
 var asapi = require("./api/asapi.js");
 var controller = new AsapiController(asapi);
@@ -115,3 +122,17 @@ loggingService.register(app, controller);
 ```
 
 That's it. The logging service will now receive incoming requests and can process them accordingly.
+
+Controllers
+-----------
+
+``asapi-controller`` : This is the main controller for this framework. This performs basic operations including:
+ - Verifying the home server token .
+ - Checking for duplicate transactions.
+ - Emitting incoming events for services to receive.
+ - Allowing multiple query handlers to handle incoming User Query or Alias Query HTTP calls.
+ - Handling registration: in particular the desired regex.
+
+``storage-controller //TODO`` : This controller stores incoming events for retrieval and searching at a later date. It is backed by MongoDB.
+
+``client-controller //TODO`` : This controller exposes the "extended" client-server HTTP API for application services.

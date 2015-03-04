@@ -78,6 +78,10 @@ util.inherits(AsapiController, EventEmitter);
  * rejected if the query was not successful.
  */
 AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
+    if (opts["exclusive"] === undefined) {
+        opts["exclusive"] = true;
+    }
+
     var check = function(opts, key, keyType) {
         if (!opts[key]) {
             console.error("addQueryHandler: opts must supply a '%s'", key);
@@ -90,7 +94,8 @@ AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
         return true;
     };
 
-    if (!check(opts, "name", "string") || !check(opts, "type", "string")) {
+    if (!check(opts, "name", "string") || !check(opts, "type", "string") ||
+            !check(opts, "exclusive", "boolean")) {
         return;
     }
 
@@ -98,9 +103,15 @@ AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
         console.error("'type' must be 'users' or 'aliases'");
         return;
     }
+
     this.queryResolvers[opts["type"]][opts["name"]] = fn;
+
     if (opts["regex"]) {
-        this.namespaces[opts["type"]].push(opts["regex"]);
+        var regex_object = {
+            exclusive: opts["exclusive"],
+            regex: opts["regex"]
+        };
+        this.namespaces[opts["type"]].push(regex_object);
     }
 };
 

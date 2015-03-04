@@ -23,14 +23,19 @@ asapi.setRoutes(app, controller.requestHandler);
 var loggingService = require("./services/logging.js");
 loggingService.register(app, controller);
 
+// TODO store HS token somewhere to prevent re-register on every startup.
 controller.register(config.homeServerUrl, config.applicationServiceUrl, 
                           config.applicationServiceToken).then(
                           function(hsToken) {
     console.log("Registered with token %s", hsToken);
+    var server = app.listen(config.port || 3000, function() {
+	    var host = server.address().address;
+	    var port = server.address().port;
+	    console.log("Listening at %s on port %s", host, port);
+	});
+},
+function(err) {
+	console.error("Unable to register for token: %s", JSON.stringify(err));
 });
 
-var server = app.listen(config.port || 3000, function() {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log("Listening at %s on port %s", host, port);
-});
+

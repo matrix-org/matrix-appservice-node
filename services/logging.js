@@ -19,7 +19,7 @@ var handleEvent = function(event) {
 };
 
 
-module.exports.register = function(app, controller) {
+module.exports.register = function(controller) {
     controller.addQueryHandler({
         name: NAME,
         type: "aliases",

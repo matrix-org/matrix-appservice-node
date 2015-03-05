@@ -21,7 +21,7 @@ asapi.setRoutes(app, controller.requestHandler);
 // plugins, these can be stand-alone node modules, so long as they meet the 
 // interface requirements
 var loggingService = require("./services/logging.js");
-loggingService.register(app, controller);
+loggingService.register(controller);
 
 // TODO store HS token somewhere to prevent re-register on every startup.
 controller.register(config.homeServerUrl, config.applicationServiceUrl, 

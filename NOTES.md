@@ -26,8 +26,19 @@ up doing something like:
 ```
 // app.js
   var appservice = require("matrix-appservice");
-  var ircBridge = require("matrix-appservice-irc");
   var elasticSearch = require("matrix-appservice-elasticsearch");
+  var ircBridge = require("matrix-appservice-irc");
+  
+  ircBridge.configure({
+    token: "my_secret_token",
+    hs: "https://matrix.example.com",
+    inboundPort: 3545
+  });
+  elasticSearch.configure({
+    token: "my_other_secret_token",
+    hs: "https://matrix.example.com"
+  });
+  
   appservice.registerServices([ircBridge, elasticSearch]);
   appservice.runForever();
 ```

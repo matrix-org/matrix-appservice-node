@@ -17,23 +17,25 @@ var AsapiController = require("./controllers/asapi-controller.js");
 var controller = new AsapiController(asapi);
 asapi.setRoutes(app, controller.requestHandler);
 
+var configs = [];
+
 module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
-        srvConfig = serviceConfigs[i];
+        var srvConfig = serviceConfigs[i];
         srvConfig.service.register(controller);
         // TODO handle as hs port token, controller per service?
     }
+    configs = serviceConfigs;
 };
 
 module.exports.runForever = function() {
     // TODO store HS token somewhere to prevent re-register on every startup.
-    controller.register(config.homeServerUrl, config.applicationServiceUrl, 
-                              config.applicationServiceToken).then(
+    controller.register(configs[0].hs, configs[0].as, configs[0].token).then(
                               function(hsToken) {
         console.log("Registered with token %s", hsToken);
-        var server = app.listen(config.port || 3000, function() {
-            var host = server.address().address;
-            var port = server.address().port;
+        configs[0].server = app.listen(3000, function() {
+            var host = configs[0].server.address().address;
+            var port = configs[0].server.address().port;
             console.log("Listening at %s on port %s", host, port);
         });
     },

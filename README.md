@@ -1,127 +1,71 @@
 This is a Matrix Application Service framework written in Node.js with Express.
 
-This can be used to quickly setup performant application services for almost anything you can think of.
+This can be used to quickly setup performant application services for almost 
+anything you can think of.
 
-Usage
-=====
+Usage (developers)
+==================
 
-The main use for this framework is for creating new ``services`` which interact with third-party APIs.
-
-The framework is primarily compromised of ``controllers`` which add core functionality onto the raw AS HTTP
-API calls. Controllers automatically control common aspects of AS API development, such as checking home
-server tokens, checking for duplicate transactions, etc. They also provide a modular way to add 
-functionality on top of the AS API:
+The main use for this framework is for creating new ``services`` which interact
+with third-party APIs. Services look something like this:
 
 ``` javascript
-var express = require("express");
-var q = require("q");
-var asapi = require("./api/asapi.js");
-var app = express();
-
-// higher-level hooks allow things like multiple query handlers
-// and modular registration regex and is built on top of asapi
-var AsapiController = require("./controllers/asapi-controller.js");
-controller = new AsapiController(asapi);
-asapi.setRoutes(app, controller.requestHandler);
-controller.addQueryHandler({
-    name: "testQueryHandler",
-    type: "users",
-    regex: "@test_.*"
-}, function(userId) {
-    // only accept user IDs with 8 characters
-    if (userId.length == 8) {
-        return q({});
-    }
-    return q.reject("narp");
-});
-controller.register("http://localhost:8008", "http://localhost:3000", "1234567890").then(function(hsToken) {
-    console.log("Registered with token %s", hsToken);
-});
-
-app.listen(3000);
-```
-
-Alternatively, to do the bare minimum HTTP calls required by the AS API specification, you can use the ``asapi`` module. This does not handle anything for you: it simply wraps the HTTP calls and presents a promise interface (using ``Q``). You will be responsible for checking tokens, preventing duplicate transactions, etc.
-
-``` javascript
-var express = require("express");
-var q = require("q");
-var app = express();
-var asapi = require("./api/asapi.js");
-
-// do a POST /register call
-asapi.register("http://localhost:8008", "http://localhost:3000", "it5a5ecr3t23v3ry1", {
-    users: [
-        "@test_.*"
-    ],
-    aliases: [
-        "#test_.*"
-    ]
-}).then(function(hsToken) {
-    console.log("Got token: "+hsToken);
-},
-function(err) {
-    console.error(err);
-});
-
-// setup incoming query hooks
-var handler = new asapi.AsapiRequestHandler();
-handler.user = function(userId) {
-    if (userId.indexOf("test") != -1) {
-        return q({});
-    }
-    return q.reject("Not a test user.");
-};
-asapi.setRoutes(app, handler);
-
-app.listen(3000);
-```
-
-Services
---------
-
-Services are built on top of ``controllers`` to perform something useful, such as integrating with a specific third-party API, or providing a well-defined feature. All services must be built on top of the core controller: ``asapi-controller`` in order for them to receive events and queries from Express. For this example, we'll make a service which just logs messages.
-
-Create a ``service`` which can register itself with ``asapi-controller``:
-
-``` javascript
-// logging.js
 var q = require("q");
 
 var aliasHandler = function(roomAlias) {
-    // create a room for this alias
+    console.log("loggingService: Receive new room '%s'", roomAlias);
+    // TODO: Handle room alias query
+    return q.reject({});
 };
 
-module.exports.register = function(app, asapiController) {
-    asapiController.addQueryHandler({
-        name: "name of the service",
+var handleEvent = function(event) {
+    console.log("RECV %s", JSON.stringify(event));
+};
+
+module.exports.configure = function(opts) {
+    // TODO: Any configuration handling (e.g. logging format)  
+};
+
+module.exports.register = function(controller) {
+    controller.addQueryHandler({
+        name: "logging-service(arbitrary-string)",
         type: "aliases",
         regex: "#log_.*",
+        exclusive: false
     }, aliasHandler);
 
     // listen for m.room.message events to log
-    asapiController.on("type:m.room.message", function(event) {
-        console.log("Logging => %s", JSON.stringify(event));
-    });
+    controller.on("type:m.room.message", handleEvent);
 };
 ```
 
-Then register the service with an ``AsapiController``:
+This example is a complete service, and could now be uploaded to npm as
+``matrix-appservice-logging``.
+
+Usage (End-users)
+=================
+
+End users need to pick and choose which services to use for their AS and
+configure them. This can be done like this:
 
 ``` javascript
-var app = express();
+var appservice = require("matrix-appservice");
+var logging = require("matrix-appservice-logging");
 
-// link the asapi api with an express app and asapi controller
-var AsapiController = require("./controllers/asapi-controller.js");
-var asapi = require("./api/asapi.js");
-var controller = new AsapiController(asapi);
-asapi.setRoutes(app, controller.requestHandler);
-
-var loggingService = require("./services/logging.js");
-loggingService.register(app, controller);
+appservice.registerServices([
+{
+    service: logging,
+    hs: "http://localhost:8008",
+    token: "1234567890",
+    as: "http://localhost:3500",
+    port: 3500
+}
+]);
+appservice.runForever();
 ```
 
-That's it. The logging service will now receive incoming requests and can process them accordingly.
+Framework
+=========
 
 Controllers
 -----------

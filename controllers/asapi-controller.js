@@ -83,7 +83,7 @@ AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
     }
 
     var check = function(opts, key, keyType) {
-        if (!opts[key]) {
+        if (opts[key] === undefined) {
             console.error("addQueryHandler: opts must supply a '%s'", key);
             return false;
         }

@@ -1,6 +1,7 @@
 module.exports.serviceName = "logging";
 
 var q = require("q");
+var aliasPrefixes = ["log_", "logged_"];
 
 var aliasHandler = function(roomAlias) {
     console.log("loggingService: Receive new room '%s'", roomAlias);
@@ -13,13 +14,18 @@ var handleEvent = function(event) {
 };
 
 module.exports.configure = function(opts) {
-    // TODO: Any configuration handling (e.g. logging format)  
+    // TODO: Any configuration handling (e.g. logging format)
+    if (opts.prefixes) {
+        aliasPrefixes = opts.prefixes;
+    }
 };
 
 module.exports.register = function(controller) {
     controller.setAliasQueryResolver(aliasHandler);
-    controller.addRegexPattern("aliases", "#log_.*", false);
-    controller.addRegexPattern("aliases", "#logged_.*", false);
+    for (var i=0; i<aliasPrefixes.length; i++) {
+        var pref = aliasPrefixes[i];
+        controller.addRegexPattern("aliases", "#"+pref+".*", false);
+    }
     // listen for m.room.message events to log
     controller.on("type:m.room.message", handleEvent);
 };

@@ -10,6 +10,7 @@ The main use for this framework is for creating new ``services`` which interact
 with third-party APIs. Services look something like this:
 
 ``` javascript
+module.exports.serviceName = "an-example-service-name";
 var q = require("q");
 
 var aliasHandler = function(roomAlias) {
@@ -27,12 +28,8 @@ module.exports.configure = function(opts) {
 };
 
 module.exports.register = function(controller) {
-    controller.addQueryHandler({
-        name: "logging-service(arbitrary-string)",
-        type: "aliases",
-        regex: "#log_.*",
-        exclusive: false
-    }, aliasHandler);
+    controller.addRegexPattern("aliases", "#log_.*", false);
+    controller.setAliasQueryResolver(aliasHandler);
 
     // listen for m.room.message events to log
     controller.on("type:m.room.message", handleEvent);

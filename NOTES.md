@@ -23,23 +23,41 @@ Architecture
 These services can be published on ``npm`` (similar to how ``karma`` plugins are added as node modules), so anyone can end
 up doing something like:
 
-```
+``` javascript
 // app.js
   var appservice = require("matrix-appservice");
   var elasticSearch = require("matrix-appservice-elasticsearch");
   var ircBridge = require("matrix-appservice-irc");
   
   ircBridge.configure({
-    token: "my_secret_token",
-    hs: "https://matrix.example.com",
-    inboundPort: 3545
-  });
-  elasticSearch.configure({
-    token: "my_other_secret_token",
-    hs: "https://matrix.example.com"
+    network: "freenode.net"
   });
   
+  appservice.configure({
+    token: "my_application_service_token",
+    hs: "https://my_homeserver.com",
+    customInboundPorts: {
+      elasticSearch: 3456,
+    }
+  })
   appservice.registerServices([ircBridge, elasticSearch]);
   appservice.runForever();
 ```
-  
+
+And developers can write services like:
+
+``` javascript
+// matrix-appservice-logging.js
+  var loggingFormat = "dd/mm/yyyy";
+  module.exports.configure = function(opts) {
+    if (opts.customLoggingFormat) {
+      loggingFormat = opts.customLoggingFormat;
+    }
+  };
+
+  module.exports.register = function(controller) {
+    controller.on("type:m.room.message", function(event) {
+      console.log("Logging: %s", event.content.body);
+    });
+  };
+```

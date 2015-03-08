@@ -37,13 +37,15 @@ up doing something like:
     {
       service: ircBridge,
       token: "ircBr1dg3",
-      hs: "https://my_server.com"
+      hs: "https://my_server.com",
+      as: "https://this_as.com/irc",
       port: 3877
     },
     {
       service: elasticSearch
       token: "s34rchys34rchy",
-      hs: "https://my_server.com"
+      hs: "https://my_server.com",
+      as: "https://this_as.com/search",
       port: 3456
     }
   ]);

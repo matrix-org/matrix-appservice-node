@@ -12,7 +12,6 @@ app.use(morgan("combined"));
 app.use(bodyParser.json());
 
 // internal libs
-var config = require("./config.js");
 var asapi = require("./api/asapi.js");
 var AsapiController = require("./controllers/asapi-controller.js");
 var controller = new AsapiController(asapi);
@@ -22,7 +21,7 @@ module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
         srvConfig = serviceConfigs[i];
         srvConfig.service.register(controller);
-        // TODO handle hs port token, controller per service?
+        // TODO handle as hs port token, controller per service?
     }
 };
 

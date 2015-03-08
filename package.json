@@ -2,7 +2,7 @@
   "name": "matrix-appservice",
   "version": "0.0.0",
   "description": "Matrix Application Service Framework",
-  "main": "app.js",
+  "main": "./index",
   "directories": {
     "test": "tests"
   },

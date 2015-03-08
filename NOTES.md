@@ -69,3 +69,12 @@ And developers can write services like:
     });
   };
 ```
+
+TODO
+----
+- Hook in matrix-js-sdk so you can actually write comprehensive services. Add extension wrapper around it.
+- Work out service storage model (events; mongodb)
+- Work out service *credentials* model (mongodb? .json?)
+- Handle transactions (dupe suppression)
+- Do an example (tumblr; reddit; irc)
+

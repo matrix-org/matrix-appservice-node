@@ -22,7 +22,7 @@ var configs = [];
 module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
         var srvConfig = serviceConfigs[i];
-        console.log("Registering service %s", srvConfig.service.serviceName);
+        console.log("Registering service '%s'", srvConfig.service.serviceName);
         srvConfig.service.register(controller);
         // TODO handle as hs port token, controller per service?
     }
@@ -31,17 +31,21 @@ module.exports.registerServices = function(serviceConfigs) {
 
 module.exports.runForever = function() {
     // TODO store HS token somewhere to prevent re-register on every startup.
-    controller.register(configs[0].hs, configs[0].as, configs[0].token).then(
-                              function(hsToken) {
-        console.log("Registered with token %s", hsToken);
-        configs[0].server = app.listen(3000, function() {
-            var host = configs[0].server.address().address;
-            var port = configs[0].server.address().port;
-            console.log("Listening at %s on port %s", host, port);
+    configs.forEach(function(config, index) {
+        controller.register(config.hs, config.as, config.token).then(
+                                  function(hsToken) {
+            console.log("Registered with token %s", hsToken);
+            config.server = app.listen(config.port || (3000+index), function() {
+                var host = config.server.address().address;
+                var port = config.server.address().port;
+                console.log("Listening at %s on port %s", host, port);
+            });
+        },
+        function(err) {
+            console.error(
+                "Unable to register for token: %s", JSON.stringify(err)
+            );
         });
-    },
-    function(err) {
-        console.error("Unable to register for token: %s", JSON.stringify(err));
     });
 };
 

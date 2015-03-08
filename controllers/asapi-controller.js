@@ -4,23 +4,11 @@ var q = require("q");
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
 
-var askHandlers = function(resolvers, param) {
-    var promises = [];
-    Object.keys(resolvers).forEach(function(key) {
-        promises.push(resolvers[key](param));
-    })
-    return q.all(promises);
-};
-
 function AsapiController(asapi) {
     this.asapi = asapi;
     this.queryResolvers = {
-        users: {
-        //   resolverName: fn
-        },
-        aliases: {
-        //   resolverName: fn    
-        }
+        users: undefined,  // function
+        aliases: undefined  // function
     };
     this.namespaces = {
         users:[],
@@ -32,21 +20,37 @@ function AsapiController(asapi) {
     var that = this;
     this.requestHandler.user = function(userId) {
         var defer = q.defer();
-        askHandlers(that.queryResolvers.users, userId).then(function() {
-            defer.resolve("OK");
+        if (!that.queryResolvers.users) {
+            console.error("Received user query for %s but no handler setup.",
+                          userId);
+            return q.reject({});
+        }
+
+        that.queryResolvers.users(userId).then(function() {
+            defer.resolve({});
         },
         function(err) {
-            defer.reject("NOK");
+            defer.reject({
+                "errcode": "M_NOT_FOUND"
+            });
         });
         return defer.promise;
     };
-    this.requestHandler.alias = function(roomAlias) {
+    this.requestHandler.aliases = function(roomAlias) {
         var defer = q.defer();
-        askHandlers(that.queryResolvers.aliases, roomAlias).then(function() {
-            defer.resolve("OK");
+        if (!that.queryResolvers.aliases) {
+            console.error("Received alias query for %s but no handler setup.",
+                          roomAlias);
+            return q.reject({});
+        }
+
+        that.queryResolvers.aliases(roomAlias).then(function() {
+            defer.resolve({});
         },
         function(err) {
-            defer.reject("NOK");
+            defer.reject({
+                "errcode": "M_NOT_FOUND"
+            });
         });
         return defer.promise;
     };
@@ -54,7 +58,10 @@ function AsapiController(asapi) {
         // verify the home server token
         if (hsToken != that.hsToken) {
             console.error("Invalid homeserver token");
-            return q.reject("Bad token");
+            return q.reject({
+                errcode: "M_FORBIDDEN",
+                error:"Bad token supplied,"
+            });
         }
         // TODO if processed this txnId then ignore it and return success.
         for (var i=0; i<events.length; i++) {
@@ -63,56 +70,50 @@ function AsapiController(asapi) {
                 that.emit("type:"+events[i].type, events[i]);
             }
         }
-        return q("Yep");
+        return q({});
     };
 };
 util.inherits(AsapiController, EventEmitter);
 
+
+AsapiController.prototype.setUserQueryResolver = function(fn) {
+    this.queryResolvers.users = fn;
+};
+
+AsapiController.prototype.setAliasQueryResolver = function(fn) {
+    this.queryResolvers.aliases = fn;
+};
+
 /*
- * Add a generic query handler for incoming queries.
- * @param {Object} opts The query options which must have a "name" for the
- * handler, as well as a "type" which is either "users" or "aliases".
- * @param {Function} fn The function to invoke when there is a query. The first
- * arg will contain the ID being queried (user ID, room alias). This function
- * should return a Promise which is resolved if the query was successful, or
- * rejected if the query was not successful.
+ * Add a regex pattern to be registered.
+ * @param {String} type : The type of regex pattern. Must be 'users' or 
+ * 'aliases'.
+ * @param {String} regex : The regex pattern.
+ * @param {Boolean} exclusive : True to reserve the matched namespace.
  */
-AsapiController.prototype.addQueryHandler = function addQueryHandler(opts, fn) {
-    if (opts["exclusive"] === undefined) {
-        opts["exclusive"] = true;
+AsapiController.prototype.addRegexPattern = function(type, regex, exclusive) {
+    if (exclusive === undefined) {
+        exclusive = true;
     }
 
-    var check = function(opts, key, keyType) {
-        if (opts[key] === undefined) {
-            console.error("addQueryHandler: opts must supply a '%s'", key);
-            return false;
-        }
-        if (keyType && typeof opts[key] != keyType) {
-            console.error("addQueryHandler: %s must be a %s", key, keyType);
-            return false;
-        }
-        return true;
-    };
-
-    if (!check(opts, "name", "string") || !check(opts, "type", "string") ||
-            !check(opts, "exclusive", "boolean")) {
+    if (typeof regex != "string") {
+        console.error("Regex must be a string");
         return;
     }
-
-    if (["users", "aliases"].indexOf(opts["type"]) == -1) {
+    if (typeof exclusive != "boolean") {
+        console.error("Exclusive must be a boolean");
+    }
+    if (["users", "aliases"].indexOf(type) == -1) {
         console.error("'type' must be 'users' or 'aliases'");
         return;
     }
 
-    this.queryResolvers[opts["type"]][opts["name"]] = fn;
+    var regexObject = {
+        exclusive: exclusive,
+        regex: regex
+    };
 
-    if (opts["regex"]) {
-        var regex_object = {
-            exclusive: opts["exclusive"],
-            regex: opts["regex"]
-        };
-        this.namespaces[opts["type"]].push(regex_object);
-    }
+    this.namespaces[type].push(regexObject);
 };
 
 AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {

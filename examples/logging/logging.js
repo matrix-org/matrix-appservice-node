@@ -1,3 +1,5 @@
+module.exports.serviceName = "logging";
+
 var q = require("q");
 
 var aliasHandler = function(roomAlias) {
@@ -15,12 +17,9 @@ module.exports.configure = function(opts) {
 };
 
 module.exports.register = function(controller) {
-    controller.addQueryHandler({
-        name: "logging-service(arbitrary-string)",
-        type: "aliases",
-        regex: "#log_.*",
-        exclusive: false
-    }, aliasHandler);
+    controller.setAliasQueryResolver(aliasHandler);
+    controller.addRegexPattern("aliases", "#log_.*", false);
+    controller.addRegexPattern("aliases", "#logged_.*", false);
     // listen for m.room.message events to log
     controller.on("type:m.room.message", handleEvent);
 };

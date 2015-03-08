@@ -22,6 +22,7 @@ var configs = [];
 module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
         var srvConfig = serviceConfigs[i];
+        console.log("Registering service %s", srvConfig.service.serviceName);
         srvConfig.service.register(controller);
         // TODO handle as hs port token, controller per service?
     }

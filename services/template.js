@@ -4,6 +4,9 @@
  */
 "use strict";
 
+// an informative name for this service
+module.exports.serviceName = "template";  
+
 /*
  * Called by the end user to configure this service.
  * @param {Object} opts The configuration options which can have custom
@@ -19,13 +22,9 @@ module.exports.configure = function(opts) {
  */
 module.exports.register = function(controller) {
     // Example: Handle new room aliases
-    controller.addQueryHandler({
-        name: "example-service",
-        type: "aliases",
-        regex: "#.*",
-        exclusive: false
-    }, function(alias) {
-        // TODO: do something with this alias query
+    controller.addRegexPattern("aliases", "#.*", false);
+    controller.setAliasQueryResolver(function(alias) {
+        // TODO: Handle incoming alias query
     });
 
     // Example: Handle messages

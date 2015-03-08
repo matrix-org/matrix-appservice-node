@@ -32,15 +32,21 @@ up doing something like:
   ircBridge.configure({
     network: "freenode.net"
   });
-  
-  appservice.configure({
-    token: "my_application_service_token",
-    hs: "https://my_homeserver.com",
-    customInboundPorts: {
-      elasticSearch: 3456,
+
+  appservice.registerServices([
+    {
+      service: ircBridge,
+      token: "ircBr1dg3",
+      hs: "https://my_server.com"
+      port: 3877
+    },
+    {
+      service: elasticSearch
+      token: "s34rchys34rchy",
+      hs: "https://my_server.com"
+      port: 3456
     }
-  })
-  appservice.registerServices([ircBridge, elasticSearch]);
+  ]);
   appservice.runForever();
 ```
 

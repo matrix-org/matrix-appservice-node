@@ -68,11 +68,10 @@ Controllers
 -----------
 
 ``asapi-controller`` : This is the main controller for this framework. This performs basic operations including:
- - Verifying the home server token .
+ - Verifying the home server token.
  - Checking for duplicate transactions.
  - Emitting incoming events for services to receive.
- - Allowing multiple query handlers to handle incoming User Query or Alias Query HTTP calls.
- - Handling registration: in particular the desired regex.
+ - Handling registration regex.
 
 ``storage-controller //TODO`` : This controller stores incoming events for retrieval and searching at a later date. It is backed by MongoDB.
 

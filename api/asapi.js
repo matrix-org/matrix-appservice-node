@@ -82,7 +82,6 @@ module.exports.setRoutes = function(app, asapiRequestHandler) {
             res.send("Missing token or transaction ID.");
             return;
         }
-        console.log(req.body);
         if (!req.body || !req.body.events) {
             res.send("Missing events body.");
             return;

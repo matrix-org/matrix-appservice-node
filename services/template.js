@@ -19,9 +19,13 @@ module.exports.configure = function(opts) {
 /*
  * Called by the asapi-controller for this service to hook into.
  * @param {AsapiController} controller The controller to register with.
- * @param {String} applicationServiceToken The token to use when making requests
+ * @param {Object} serviceConfig The config for this service, including:
+ *   - "hs" {String} : the home server base url
+ *   - "as" {String} : the application service base url
+ *   - "token" {String} : the application service token
+ *   - "port" {Number} : the port being listened on
  */
-module.exports.register = function(controller, applicationServiceToken) {
+module.exports.register = function(controller, serviceConfig) {
     // Example: Handle new room aliases
     controller.addRegexPattern("aliases", "#.*", false);
     controller.setAliasQueryResolver(function(alias) {

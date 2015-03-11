@@ -19,8 +19,9 @@ module.exports.configure = function(opts) {
 /*
  * Called by the asapi-controller for this service to hook into.
  * @param {AsapiController} controller The controller to register with.
+ * @param {String} applicationServiceToken The token to use when making requests
  */
-module.exports.register = function(controller) {
+module.exports.register = function(controller, applicationServiceToken) {
     // Example: Handle new room aliases
     controller.addRegexPattern("aliases", "#.*", false);
     controller.setAliasQueryResolver(function(alias) {

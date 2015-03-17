@@ -36,7 +36,7 @@ function AsapiController(asapi) {
         });
         return defer.promise;
     };
-    this.requestHandler.aliases = function(roomAlias) {
+    this.requestHandler.alias = function(roomAlias) {
         var defer = q.defer();
         if (!that.queryResolvers.aliases) {
             console.error("Received alias query for %s but no handler setup.",

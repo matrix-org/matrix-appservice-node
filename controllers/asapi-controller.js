@@ -140,4 +140,8 @@ AsapiController.prototype.setHomeserverToken = function(hsToken) {
     this.hsToken = hsToken;
 };
 
+AsapiController.prototype.getRegexNamespaces = function() {
+    return this.namespaces;
+};
+
 module.exports = AsapiController;

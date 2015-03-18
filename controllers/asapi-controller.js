@@ -120,7 +120,6 @@ AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {
     var defer = q.defer();
     var that = this;
     if (this.hsToken) {
-        console.log("Already registered.");
         return q(this.hsToken);
     }
     this.asapi.register(hsUrl, asUrl, asToken, this.namespaces).then(function(hsToken) {

@@ -6,16 +6,9 @@ var bodyParser = require('body-parser');
 var morgan = require("morgan");
 var q = require("q");
 
-// app setup
-var app = express();
-app.use(morgan("combined"));
-app.use(bodyParser.json());
-
 // internal libs
 var asapi = require("./api/asapi.js");
 var AsapiController = require("./controllers/asapi-controller.js");
-var controller = new AsapiController(asapi);
-asapi.setRoutes(app, controller.requestHandler);
 
 var configs = [];
 
@@ -23,20 +16,31 @@ module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
         var srvConfig = serviceConfigs[i];
         console.log("Registering service '%s'", srvConfig.service.serviceName);
+
+        // app setup
+        var app = express();
+        app.use(morgan("combined"));
+        app.use(bodyParser.json());
+        var controller = new AsapiController(asapi);
+        asapi.setRoutes(app, controller.requestHandler);
+
         srvConfig.service.register(controller, srvConfig);
+        srvConfig._internal = {
+            app: app,
+            controller: controller
+        };
     }
     configs = serviceConfigs;
 };
 
 module.exports.runForever = function() {
-    // TODO store HS token somewhere to prevent re-register on every startup.
     configs.forEach(function(config, index) {
-        controller.register(config.hs, config.as, config.token).then(
-                                  function(hsToken) {
-            console.log("Registered with token %s", hsToken);
-            config.server = app.listen(config.port || (3000+index), function() {
-                var host = config.server.address().address;
-                var port = config.server.address().port;
+        config._internal.controller.register(
+                config.hs, config.as, config.token).then(function(hsToken) {
+            config._internal.server = config._internal.app.listen(
+                    config.port || (3000+index), function() {
+                var host = config._internal.server.address().address;
+                var port = config._internal.server.address().port;
                 console.log("Listening at %s on port %s", host, port);
             });
         },

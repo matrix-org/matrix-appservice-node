@@ -64,21 +64,16 @@ appservice.runForever();
 Framework
 =========
 
-Controllers
------------
-
 ``asapi-controller`` : This is the main controller for this framework. This performs basic operations including:
  - Verifying the home server token.
  - Checking for duplicate transactions.
  - Emitting incoming events for services to receive.
  - Handling registration regex.
 
-``storage-controller //TODO`` : This controller stores incoming events for retrieval and searching at a later date. It is backed by MongoDB.
-
-``client-controller //TODO`` : This controller exposes the "extended" client-server HTTP API for application services.
-
 Emitted Events
 --------------
 ``asapi-controller`` will emit Node.js events when incoming events are sent to the AS by the HS. The list of possible events are:
  - ``event`` : A generic catch-all which is emitted for every incoming event.
  - ``type:[event.type]`` : An event emitted for the specified type e.g. ``type:m.room.message``
+ - ``registered`` : Emitted when the AS successfully registers with the HS. Contains an object with
+   a key ``hsToken`` for the home server token.

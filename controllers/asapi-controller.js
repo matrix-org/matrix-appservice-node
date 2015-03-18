@@ -26,7 +26,7 @@ function AsapiController(asapi) {
             return q.reject({});
         }
 
-        that.queryResolvers.users(userId).then(function() {
+        that.queryResolvers.users(userId).done(function() {
             defer.resolve({});
         },
         function(err) {
@@ -44,7 +44,7 @@ function AsapiController(asapi) {
             return q.reject({});
         }
 
-        that.queryResolvers.aliases(roomAlias).then(function() {
+        that.queryResolvers.aliases(roomAlias).done(function() {
             defer.resolve({});
         },
         function(err) {
@@ -126,7 +126,8 @@ AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {
     this.asapi.register(hsUrl, asUrl, asToken, this.namespaces).then(function(hsToken) {
         that.hsToken = hsToken;
         that.emit("registered", {
-            hsToken: hsToken
+            hsToken: hsToken,
+            namespaces: that.namespaces
         });
         defer.resolve(hsToken);
     }, function(err) {

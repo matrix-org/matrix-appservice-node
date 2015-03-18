@@ -27,7 +27,7 @@ module.exports.configure = function(opts) {
     // TODO: Any configuration handling (e.g. logging format)  
 };
 
-module.exports.register = function(controller) {
+module.exports.register = function(controller, serviceConfig) {
     controller.addRegexPattern("aliases", "#log_.*", false);
     controller.setAliasQueryResolver(aliasHandler);
 
@@ -60,6 +60,8 @@ appservice.registerServices([
 ]);
 appservice.runForever();
 ```
+
+This will run the logging service, listening on port 3500. Multiple services can be registered.
 
 Framework
 =========
@@ -107,7 +109,6 @@ It has the following methods:
    * ``hsToken`` (String): The home server token.
  - ``on(nodeEventType, fn)``: Listens for the specified event type, and invoke the specified function.
 
-
 Emitted Events
 --------------
 ``asapi-controller`` will emit Node.js events when incoming events are sent to the AS by the HS. The list of possible event types are:
@@ -116,3 +117,15 @@ Emitted Events
  - ``registered`` (emits Object): Emitted when the AS successfully registers with the HS. Contains an object with
    a key ``hsToken`` for the home server token. To prevent re-registration on startup, call
   ``controller.setHomeserverToken(hsToken)`` in your service's ``register(controller, config)`` function.
+
+Service API
+===========
+Services can be built as separate node packages. As a result, they need to conform to the same interface in order for ``matrix-appservice`` to use them. The package's ``module.exports`` must have the following:
+ - ``serviceName`` (String): The name of the service. Typically the package name e.g. ``matrix-appservice-foo``.
+ - ``configure(opts)``: The service specific configuration.
+   * ``opts`` (Object): Any specific configuration information your service requires. This is completely separate
+     to the Service Config.
+ - ``register(controller, config)``: Set up this service for the provided controller.
+   * ``controller`` (AsapiController): The controller instance to register with.
+   * ``config`` (Object): The Service Config to use for requests (e.g. to the Client-Server API). This contains
+     the base homeserver URL as well as the application service token you should be using to authorise your service.

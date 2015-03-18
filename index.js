@@ -15,7 +15,8 @@ var configs = [];
 module.exports.registerServices = function(serviceConfigs) {
     for (var i=0; i<serviceConfigs.length; i++) {
         var srvConfig = serviceConfigs[i];
-        console.log("Registering service '%s'", srvConfig.service.serviceName);
+        console.log("matrix-appservice: Registering service '%s'", 
+            srvConfig.service.serviceName);
 
         // app setup
         var app = express();
@@ -24,10 +25,11 @@ module.exports.registerServices = function(serviceConfigs) {
         var controller = new AsapiController(asapi);
         asapi.setRoutes(app, controller.requestHandler);
 
-        srvConfig.service.register(controller, srvConfig);
+        var defer = srvConfig.service.register(controller, srvConfig);
         srvConfig._internal = {
             app: app,
-            controller: controller
+            controller: controller,
+            defer: defer
         };
     }
     configs = serviceConfigs;
@@ -35,20 +37,35 @@ module.exports.registerServices = function(serviceConfigs) {
 
 module.exports.runForever = function() {
     configs.forEach(function(config, index) {
-        config._internal.controller.register(
-                config.hs, config.as, config.token).then(function(hsToken) {
-            config._internal.server = config._internal.app.listen(
-                    config.port || (3000+index), function() {
-                var host = config._internal.server.address().address;
-                var port = config._internal.server.address().port;
-                console.log("Listening at %s on port %s", host, port);
+        if (config._internal.defer) {
+            console.log("matrix-appservice: Waiting on %s register() to finish", 
+                config.service.serviceName);
+            config._internal.defer.done(function() {
+                runService(config);
             });
-        },
-        function(err) {
-            console.error(
-                "Unable to register for token: %s", JSON.stringify(err)
-            );
+        }
+        else {
+            runService(config);
+        }
+    });
+};
+
+var runService = function(config) {
+    config._internal.controller.register(
+            config.hs, config.as, config.token).then(function(hsToken) {
+        config._internal.server = config._internal.app.listen(
+                config.port || (3000+index), function() {
+            var host = config._internal.server.address().address;
+            var port = config._internal.server.address().port;
+            console.log("matrix-appservice: %s listening at %s on port %s", 
+                config.service.serviceName, host, port);
         });
+    },
+    function(err) {
+        console.error(
+            "matrix-appservice: %s was unable to register for token: %s", 
+            config.service.serviceName, JSON.stringify(err)
+        );
     });
 };
 

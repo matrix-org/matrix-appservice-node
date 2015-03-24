@@ -54,6 +54,7 @@ function AsapiController(asapi) {
         });
         return defer.promise;
     };
+    var lasProcessedTxnId = undefined;
     this.requestHandler.transaction = function(events, txnId, hsToken) {
         // verify the home server token
         if (hsToken != that.hsToken) {
@@ -63,6 +64,10 @@ function AsapiController(asapi) {
                 error:"Bad token supplied,"
             });
         }
+        if (lasProcessedTxnId === txnId) {
+            // duplicate
+            return q({});
+        }
         // TODO if processed this txnId then ignore it and return success.
         for (var i=0; i<events.length; i++) {
             that.emit("event", events[i]);
@@ -70,6 +75,7 @@ function AsapiController(asapi) {
                 that.emit("type:"+events[i].type, events[i]);
             }
         }
+        lasProcessedTxnId = txnId;
         return q({});
     };
 };

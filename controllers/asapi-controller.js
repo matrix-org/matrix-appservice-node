@@ -10,6 +10,7 @@ function AsapiController(asapi) {
         users: undefined,  // function
         aliases: undefined  // function
     };
+    this.loggerFn = function(str){} // do nothing
     this.namespaces = {
         users:[],
         aliases:[],
@@ -88,6 +89,10 @@ AsapiController.prototype.setUserQueryResolver = function(fn) {
 
 AsapiController.prototype.setAliasQueryResolver = function(fn) {
     this.queryResolvers.aliases = fn;
+};
+
+AsapiController.prototype.setLogger = function(fn) {
+    this.loggerFn = fn;
 };
 
 /*

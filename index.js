@@ -17,12 +17,18 @@ module.exports.registerServices = function(serviceConfigs) {
         var srvConfig = serviceConfigs[i];
         console.log("matrix-appservice: Registering service '%s'", 
             srvConfig.service.serviceName);
+        var controller = new AsapiController(asapi);
 
         // app setup
         var app = express();
-        app.use(morgan("combined"));
+        app.use(morgan("combined", {
+            stream: {
+                write: function(str) {
+                    controller.loggerFn(str);
+                }
+            }
+        }));
         app.use(bodyParser.json());
-        var controller = new AsapiController(asapi);
         asapi.setRoutes(app, controller.requestHandler);
 
         var defer = srvConfig.service.register(controller, srvConfig);

@@ -114,8 +114,8 @@ AsapiController.prototype.addRegexPattern = function(type, regex, exclusive) {
     if (typeof exclusive != "boolean") {
         console.error("Exclusive must be a boolean");
     }
-    if (["users", "aliases"].indexOf(type) == -1) {
-        console.error("'type' must be 'users' or 'aliases'");
+    if (["users", "aliases", "rooms"].indexOf(type) == -1) {
+        console.error("'type' must be 'users', 'rooms' or 'aliases'");
         return;
     }
 

@@ -10,6 +10,7 @@ appservice.registerServices([
 {
     service: logging,
     hs: "http://localhost:8008",
+    hsToken: "d2b52424827ab3c28476e3f",
     token: "1234567890",
     as: "http://localhost:3522",
     port: 3522
@@ -17,11 +18,11 @@ appservice.registerServices([
 ]);
 
 // return the config files which need to be put in the homeserver
-appservice.getConfigFiles().done(function(entries) {
+appservice.getRegistrations().done(function(entries) {
     entries.forEach(function(c) {
-        console.log("===== BEGIN CONFIG FILE =====");
+        console.log("===== BEGIN REGISTRATION YAML =====");
         console.log(yaml.safeDump(c));
-        console.log("===== END CONFIG FILE =====");
+        console.log("===== END REGISTRATION YAML =====");
         console.log(
             "The above YAML file should be added to the destination HS config YAML"
         );

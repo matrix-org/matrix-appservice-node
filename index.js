@@ -20,6 +20,11 @@ module.exports.registerServices = function(serviceConfigs) {
             srvConfig.service.serviceName);
         var controller = new AsapiController(asapi);
 
+        if (!srvConfig.hsToken) {
+            console.error("Missing home server token 'hsToken'!");
+            process.exit(1);
+        }
+
         // app setup
         var app = express();
         app.use(morgan("combined", {
@@ -31,7 +36,7 @@ module.exports.registerServices = function(serviceConfigs) {
         }));
         app.use(bodyParser.json());
         asapi.setRoutes(app, controller.requestHandler);
-
+        controller.hsToken = srvConfig.hsToken;
         var defer = srvConfig.service.register(controller, srvConfig);
         srvConfig._internal = {
             app: app,
@@ -42,9 +47,9 @@ module.exports.registerServices = function(serviceConfigs) {
     configs = serviceConfigs;
 };
 
-module.exports.getConfigFiles = function() {
+module.exports.getRegistrations = function() {
     var defer = q.defer();
-    var configEntries = [];
+    var registrations = [];
     var outstandingPromises = [];
     configs.forEach(function(config, index) {
         if (config._internal.defer) {
@@ -52,15 +57,15 @@ module.exports.getConfigFiles = function() {
                 config.service.serviceName);
             outstandingPromises.push(config._internal.defer);
             config._internal.defer.done(function() {
-                configEntries.push(getServiceConfig(config));
+                registrations.push(getServiceRegistration(config));
             });
         }
         else {
-            configEntries.push(getServiceConfig(config));
+            registrations.push(getServiceRegistration(config));
         }
     });
     q.all(outstandingPromises).done(function() {
-        defer.resolve(configEntries);
+        defer.resolve(registrations);
     });
     return defer.promise;
 };
@@ -80,10 +85,8 @@ module.exports.runForever = function() {
     });
 };
 
-var getServiceConfig = function(config) {
-    var hsToken = (
-        config._internal.controller.hsToken || crypto.randomBytes(64).toString('hex')
-    );
+var getServiceRegistration = function(config) {
+    var hsToken = config._internal.controller.hsToken;
     var localpart = config.localpart || config.service.serviceName;
     return {
         url: config.as,

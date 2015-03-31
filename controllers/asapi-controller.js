@@ -127,10 +127,6 @@ AsapiController.prototype.addRegexPattern = function(type, regex, exclusive) {
     this.namespaces[type].push(regexObject);
 };
 
-AsapiController.prototype.setHomeserverToken = function(hsToken) {
-    this.hsToken = hsToken;
-};
-
 AsapiController.prototype.getRegexNamespaces = function() {
     return this.namespaces;
 };

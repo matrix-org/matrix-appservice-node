@@ -127,25 +127,6 @@ AsapiController.prototype.addRegexPattern = function(type, regex, exclusive) {
     this.namespaces[type].push(regexObject);
 };
 
-AsapiController.prototype.register = function register(hsUrl, asUrl, asToken) {
-    var defer = q.defer();
-    var that = this;
-    if (this.hsToken) {
-        return q(this.hsToken);
-    }
-    this.asapi.register(hsUrl, asUrl, asToken, this.namespaces).then(function(hsToken) {
-        that.hsToken = hsToken;
-        that.emit("registered", {
-            hsToken: hsToken,
-            namespaces: that.namespaces
-        });
-        defer.resolve(hsToken);
-    }, function(err) {
-        defer.reject(err);
-    });
-    return defer.promise;
-};
-
 AsapiController.prototype.setHomeserverToken = function(hsToken) {
     this.hsToken = hsToken;
 };

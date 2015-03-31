@@ -41,6 +41,23 @@ module.exports.registerServices = function(serviceConfigs) {
     configs = serviceConfigs;
 };
 
+module.exports.getConfigs = function() {
+    var configEntries = [];
+    configs.forEach(function(config, index) {
+        if (config._internal.defer) {
+            console.log("matrix-appservice: Waiting on %s register() to finish", 
+                config.service.serviceName);
+            config._internal.defer.done(function() {
+                configEntries.push(getServiceConfig(config));
+            });
+        }
+        else {
+            configEntries.push(getServiceConfig(config));
+        }
+    });
+    return configEntries;
+};
+
 module.exports.runForever = function() {
     configs.forEach(function(config, index) {
         if (config._internal.defer) {
@@ -54,6 +71,16 @@ module.exports.runForever = function() {
             runService(config);
         }
     });
+};
+
+var getServiceConfig = function(config) {
+    return {
+        url: config.as,
+        as_token: config.token,
+        hs_token: "foo",
+        sender_localpart: "bar",
+        namespaces: config._internal.controller.namespaces
+    }
 };
 
 var runService = function(config) {

@@ -17,13 +17,15 @@ appservice.registerServices([
 ]);
 
 // return the config files which need to be put in the homeserver
-appservice.getConfigFiles().forEach(function(c) {
-    console.log("===== BEGIN CONFIG FILE =====");
-    console.log(yaml.safeDump(c));
-    console.log("===== END CONFIG FILE =====");
-    console.log(
-        "The above YAML file should be added to the destination HS config YAML"
-    );
+appservice.getConfigFiles().done(function(entries) {
+    entries.forEach(function(c) {
+        console.log("===== BEGIN CONFIG FILE =====");
+        console.log(yaml.safeDump(c));
+        console.log("===== END CONFIG FILE =====");
+        console.log(
+            "The above YAML file should be added to the destination HS config YAML"
+        );
+    });
 });
 
 // actually listen on the port

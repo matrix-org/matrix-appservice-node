@@ -43,11 +43,14 @@ module.exports.registerServices = function(serviceConfigs) {
 };
 
 module.exports.getConfigFiles = function() {
+    var defer = q.defer();
     var configEntries = [];
+    var outstandingPromises = [];
     configs.forEach(function(config, index) {
         if (config._internal.defer) {
             console.log("matrix-appservice: Waiting on %s register() to finish", 
                 config.service.serviceName);
+            outstandingPromises.push(config._internal.defer);
             config._internal.defer.done(function() {
                 configEntries.push(getServiceConfig(config));
             });
@@ -56,7 +59,10 @@ module.exports.getConfigFiles = function() {
             configEntries.push(getServiceConfig(config));
         }
     });
-    return configEntries;
+    q.all(outstandingPromises).done(function() {
+        defer.resolve(configEntries);
+    });
+    return defer.promise;
 };
 
 module.exports.runForever = function() {

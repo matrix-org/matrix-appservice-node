@@ -53,6 +53,7 @@ appservice.registerServices([
 {
     service: logging,
     hs: "http://localhost:8008",
+    hsToken: "a62b3cde826f274a310900a7bc373dd27",
     token: "1234567890",
     as: "http://localhost:3500",
     port: 3500
@@ -62,7 +63,16 @@ appservice.runForever();
 ```
 
 This will run the logging service, listening on port 3500. Multiple services can
-be registered.
+be registered. To generate the application registration files:
+``` javascript
+// return the config files which need to be put in the homeserver
+var yaml = require("js-yaml");
+appservice.getRegistrations().done(function(entries) {
+    entries.forEach(function(entry) {
+        console.log(yaml.safeDump(entry));
+    });
+});
+```
 
 Framework
 =========
@@ -73,6 +83,7 @@ This is an Object which has the following keys/values:
  - ``service`` => ``Object``: The value is the desired service to register, e.g.
  ``require("matrix-appservice-irc")``
  - ``hs`` => ``String``: The base home server URL to hit to register with.
+ - ``hsToken`` => ``String``: The home server token which will be added on requests from the HS.
  - ``token`` => ``String``: The application service token.
  - ``as`` => ``String``: The base application service URL that the home server
  should hit for incoming events.
@@ -86,6 +97,9 @@ has the following methods:
  service and invoke the ``register``
    method for each service.
    * ``serviceConfigs`` (Array<Object>): An array of service configs.
+ - ``getRegistrations()``: Get the registration YAML files for each registered service.
+ Returns a Promise, which resolves to an array of Objects which represent the desired
+ YAML. This object can be safely dumped by a YAML library.
  - ``runForever()``: For each registered service, listen on the specified port.
 
 asapi-controller
@@ -120,15 +134,6 @@ It has the following methods:
    * ``regex`` (String): The regex pattern.
    * ``exclusive`` (Boolean): True to reserve the matched namespace.
 
- - ``register(hsUrl, asUrl, asToken)``: [PRIVATE] Register with the home server.
- Services should not need to invoke this manually, as it is called for you in
- ``matrix-appservice.runForever()``.
-
- - ``setHomeserverToken(hsToken)``: Set the home server token to use when 
- checking incoming requests. This will prevent registration if it is called 
- before the ``register`` method.
-   * ``hsToken`` (String): The home server token.
-
  - ``on(nodeEventType, fn)``: Listens for the specified event type, and invoke
  the specified function.
 
@@ -140,11 +145,6 @@ the AS by the HS. The list of possible event types are:
  incoming event.
  - ``type:[event.type]`` (emits Object) : An event emitted for the specified
  type e.g. ``type:m.room.message``
- - ``registered`` (emits Object): Emitted when the AS successfully registers
- with the HS. Contains an object with a key ``hsToken`` for the home server
- token. To prevent re-registration on startup, call
- ``controller.setHomeserverToken(hsToken)`` in your service's 
- ``register(controller, config)`` function.
 
 Service API
 ===========
@@ -152,7 +152,8 @@ Services can be built as separate node packages. As a result, they need to
 conform to the same interface in order for ``matrix-appservice`` to use them. 
 The package's ``module.exports`` must have the following:
  - ``serviceName`` (String): The name of the service. Typically the package name
- e.g. ``matrix-appservice-foo``.
+ e.g. ``matrix-appservice-foo``. This name is the default user ID localpart specified
+ in the application service registration, so shouldn't contain special characters.
 
  - ``configure(opts)``: The service specific configuration.
    * ``opts`` (Object): Any specific configuration information your service

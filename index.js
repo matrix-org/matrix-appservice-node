@@ -1,6 +1,7 @@
 "use strict";
 
 // external libs
+var crypto = require("crypto");
 var express = require("express");
 var bodyParser = require('body-parser');
 var morgan = require("morgan");
@@ -41,7 +42,7 @@ module.exports.registerServices = function(serviceConfigs) {
     configs = serviceConfigs;
 };
 
-module.exports.getConfigs = function() {
+module.exports.getConfigFiles = function() {
     var configEntries = [];
     configs.forEach(function(config, index) {
         if (config._internal.defer) {
@@ -74,31 +75,26 @@ module.exports.runForever = function() {
 };
 
 var getServiceConfig = function(config) {
+    var hsToken = (
+        config._internal.controller.hsToken || crypto.randomBytes(64).toString('hex')
+    );
+    var localpart = config.localpart || config.service.serviceName;
     return {
         url: config.as,
         as_token: config.token,
-        hs_token: "foo",
-        sender_localpart: "bar",
+        hs_token: hsToken,
+        sender_localpart: localpart,
         namespaces: config._internal.controller.namespaces
     }
 };
 
 var runService = function(config) {
-    config._internal.controller.register(
-            config.hs, config.as, config.token).then(function(hsToken) {
-        config._internal.server = config._internal.app.listen(
-                config.port || (3000+index), function() {
-            var host = config._internal.server.address().address;
-            var port = config._internal.server.address().port;
-            console.log("matrix-appservice: %s listening at %s on port %s", 
-                config.service.serviceName, host, port);
-        });
-    },
-    function(err) {
-        console.error(
-            "matrix-appservice: %s was unable to register for token: %s", 
-            config.service.serviceName, JSON.stringify(err)
-        );
+    config._internal.server = config._internal.app.listen(
+            config.port || (3000+index), function() {
+        var host = config._internal.server.address().address;
+        var port = config._internal.server.address().port;
+        console.log("matrix-appservice: %s listening at %s on port %s", 
+            config.service.serviceName, host, port);
     });
 };
 

@@ -4,7 +4,8 @@
  */
 "use strict";
 
-// an informative name for this service
+// an informative name for this service - this will be used as a default user ID
+// localpart
 module.exports.serviceName = "template";  
 
 /*
@@ -24,6 +25,7 @@ module.exports.configure = function(opts) {
  *   - "as" {String} : the application service base url
  *   - "token" {String} : the application service token
  *   - "port" {Number} : the port being listened on
+ *   - "localpart" {String} : (Optional) the desired AS user ID localpart
  */
 module.exports.register = function(controller, serviceConfig) {
     // Example: Handle new room aliases

@@ -34,7 +34,9 @@ module.exports.registerServices = function(serviceConfigs) {
                 }
             }
         }));
-        app.use(bodyParser.json());
+        app.use(bodyParser.json({
+            limit: 5000000
+        }));
         asapi.setRoutes(app, controller.requestHandler);
         controller.hsToken = srvConfig.hsToken;
         var defer = srvConfig.service.register(controller, srvConfig);

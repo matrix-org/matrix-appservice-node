@@ -1,6 +1,6 @@
 {
   "name": "matrix-appservice",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Matrix Application Service Framework",
   "main": "./index",
   "directories": {
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "url": "https://github.com/Kegsay/matrix-appservice-node"
+    "url": "https://github.com/matrix-org/matrix-appservice-node"
   },
   "keywords": [
     "matrix-org"

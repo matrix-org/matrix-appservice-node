@@ -1,7 +1,24 @@
 This is a Matrix Application Service framework written in Node.js with Express.
 
 This can be used to quickly setup performant application services for almost 
-anything you can think of.
+anything you can think of in a framework agnostic way.
+
+What does it do
+===============
+This framework does two things:
+ - It specifies a basic API with several functions which can be used
+   to create an application service.
+ - It uses Express to run a web server for the application service.
+
+Why should I use it?
+====================
+Application services should be written in a way which is agnostic to the web
+application framework being used (Express, Koa, Hapi, Restify, etc) in order to
+allow the same application service package to be used for all of them. This
+project allows this by specifying a set of functions which are common for all
+web application frameworks (e.g. the port to listen on). This framework also
+provides common AS API operations such as verifying the HS token and 
+suppressing duplicate transactions.
 
 Usage (developers)
 ==================
@@ -37,40 +54,44 @@ module.exports.register = function(controller, serviceConfig) {
 ```
 
 This example is a complete service, and could now be uploaded to npm as
-``matrix-appservice-logging``.
+``matrix-appservice-logging``. As you can see, it doesn't mention any web
+framework at all; it is just the raw application-specific code along with
+several AS API method calls.
 
 Usage (End-users)
 =================
 
-End users need to pick and choose which services to use for their AS and
+End users need to pick and choose a service to run for their AS and
 configure them. This can be done like this:
 
 ``` javascript
 var appservice = require("matrix-appservice");
 var logging = require("matrix-appservice-logging");
 
-appservice.registerServices([
-{
+appservice.registerService({
     service: logging,
-    hs: "http://localhost:8008",
-    hsToken: "a62b3cde826f274a310900a7bc373dd27",
-    token: "1234567890",
-    as: "http://localhost:3500",
-    port: 3500
-}
-]);
+    homeserver: {
+        url: "http://localhost:8008",
+        token: "a62b3cde826f274a310900a7bc373dd27"
+    },
+    appservice: {
+        url: "http://localhost:3500"
+        token: "1b323cd243fee"
+    },
+    http: {
+        port: 3500
+    }
+});
 appservice.runForever();
 ```
 
-This will run the logging service, listening on port 3500. Multiple services can
-be registered. To generate the application registration files:
+This will run the logging service, listening on port 3500. To generate the
+application registration file:
 ``` javascript
 // return the config files which need to be put in the homeserver
 var yaml = require("js-yaml");
-appservice.getRegistrations().done(function(entries) {
-    entries.forEach(function(entry) {
-        console.log(yaml.safeDump(entry));
-    });
+appservice.getRegistration().done(function(registration) {
+    console.log(yaml.safeDump(registration));
 });
 ```
 
@@ -82,25 +103,30 @@ Service config
 This is an Object which has the following keys/values:
  - ``service`` => ``Object``: The value is the desired service to register, e.g.
  ``require("matrix-appservice-irc")``
- - ``hs`` => ``String``: The base home server URL to hit to register with.
- - ``hsToken`` => ``String``: The home server token which will be added on requests from the HS.
- - ``token`` => ``String``: The application service token.
- - ``as`` => ``String``: The base application service URL that the home server
- should hit for incoming events.
- - ``port`` => ``Number``: The port to listen on.
+ - ``homeserver`` => ``Object``: Configuration for the homeserver:
+    * ``url`` => ``String`` : The home server URL the AS should make requests to.
+    * ``token`` => ``String`` : The home server token which will be added on requests from the HS.
+ - ``appservice`` => ``Object``: Configuration for the application service:
+    * ``token`` => ``String`` : The application service token.
+    * ``url`` => ``String`` : The base application service URL that the home server
+      should hit for incoming events.
+ - ``http`` => ``Object`` : Configuration for the AS HTTP server:
+    * ``port`` => ``Number``: The port to listen on.
+    * ``maxSize`` => ``Number`` : (Optional) The max number of bytes to accept
+      in a single request before sending a HTTP 413.
 
 matrix-appservice
 -----------------
 This is the object returned when performing ``require("matrix-appservice")``. It
 has the following methods:
- - ``registerServices(servicesConfigs)``: Configure a web server for each 
- service and invoke the ``register``
-   method for each service.
-   * ``serviceConfigs`` (Array<Object>): An array of service configs.
- - ``getRegistrations()``: Get the registration YAML files for each registered service.
- Returns a Promise, which resolves to an array of Objects which represent the desired
- YAML. This object can be safely dumped by a YAML library.
- - ``runForever()``: For each registered service, listen on the specified port.
+ - ``registerService(serviceConfig)``: Configure a web server for the given 
+   service and invoke the ``register`` method on it.
+   * ``serviceConfig`` => ``Object``: A service config.
+ - ``getRegistration()``: Get the registration YAML files for the registered
+   service. Returns a ``Promise`` which resolves to an ``Object`` which 
+   represents the desired registration YAML. This object can be safely dumped
+   by a YAML parser.
+ - ``runForever()``: Start listening for this service.
 
 asapi-controller
 ----------------

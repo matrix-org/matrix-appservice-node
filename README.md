@@ -156,9 +156,9 @@ It has the following methods:
 
  - ``addRegexPattern(type, regex, exclusive)``: Add a regex pattern to be 
  registered.
-   * ``type`` (String): The type of regex pattern. Must be 'users' or 'aliases'.
-   * ``regex`` (String): The regex pattern.
-   * ``exclusive`` (Boolean): True to reserve the matched namespace.
+    * ``type`` (String): The type of regex pattern. Must be 'users' or 'aliases'.
+    * ``regex`` (String): The regex pattern.
+    * ``exclusive`` (Boolean): True to reserve the matched namespace.
 
  - ``on(nodeEventType, fn)``: Listens for the specified event type, and invoke
  the specified function.
@@ -176,18 +176,18 @@ Service API
 ===========
 Services can be built as separate node packages. As a result, they need to 
 conform to the same interface in order for ``matrix-appservice`` to use them. 
-The package's ``module.exports`` must have the following:
+The package's ``module.exports`` must have the following variables:
  - ``serviceName`` (String): The name of the service. Typically the package name
  e.g. ``matrix-appservice-foo``. This name is the default user ID localpart specified
  in the application service registration, so shouldn't contain special characters.
 
- - ``configure(opts)``: The service specific configuration.
+ - ``configure(opts)`` (Function): The service specific configuration.
    * ``opts`` (Object): Any specific configuration information your service
    requires. This is completely separate to the Service Config.
 
- - ``register(controller, config)``: Set up this service for the provided 
+ - ``register(controller, config)`` (Function): Set up this service for the provided 
  controller.
-   * ``controller`` (AsapiController): The controller instance to register with.
-   * ``config`` (Object): The Service Config to use for requests (e.g. to the 
-   Client-Server API). This contains the base homeserver URL as well as the
-   application service token you should be using to authorise your service.
+    * ``controller`` (AsapiController): The controller instance to register with.
+    * ``config`` (Object): The Service Config to use for requests (e.g. to the 
+    Client-Server API). This contains the base homeserver URL as well as the
+    application service token you should be using to authorise your service.

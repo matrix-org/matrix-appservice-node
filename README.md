@@ -8,7 +8,9 @@ var AppService = require("matrix-appservice").AppService;
 var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration;
 
 // creating registration files
-var reg = new AppServiceRegistration();
+var reg = new AppServiceRegistration("http://my-application-service.com");
+reg.setHomeserverToken(reg.generateToken());
+reg.setAppServiceToken(reg.generateToken());
 reg.addRegexPattern("users", "@.*", true);
 reg.outputAsYaml("registration.yaml");
 
@@ -19,8 +21,9 @@ var as = new AppService({
 as.on("type:m.room.message", function(event) {
   // handle the incoming message
 });
-as.on("query:user", function(userId) {
-  // handle the incoming user query
+as.onUserQuery = function(userId, callback) {
+  // handle the incoming user query then respond
+  callback();
 });
 as.listen(8010);
 ```

@@ -8,7 +8,7 @@ var AppService = require("matrix-appservice").AppService;
 var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration;
 
 // creating registration files
-var reg = new AppServiceRegistration("http://my-application-service.com");
+var reg = new AppServiceRegistration("http://localhost:8010");
 reg.setHomeserverToken(reg.generateToken());
 reg.setAppServiceToken(reg.generateToken());
 reg.addRegexPattern("users", "@.*", true);
@@ -23,8 +23,9 @@ as.on("type:m.room.message", function(event) {
 });
 as.onUserQuery = function(userId, callback) {
   // handle the incoming user query then respond
+  console.log("RECV %s", userId);
   callback();
-});
+};
 as.listen(8010);
 ```
 

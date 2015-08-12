@@ -11,6 +11,7 @@ var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration
 var reg = new AppServiceRegistration("http://localhost:8010");
 reg.setHomeserverToken(AppServiceRegistration.generateToken());
 reg.setAppServiceToken(AppServiceRegistration.generateToken());
+reg.setSenderLocalpart("example-appservice");
 reg.addRegexPattern("users", "@.*", true);
 reg.outputAsYaml("registration.yaml");
 
@@ -25,6 +26,14 @@ as.onUserQuery = function(userId, callback) {
   // handle the incoming user query then respond
   console.log("RECV %s", userId);
   callback();
+};
+// can also do this as a promise
+as.onAliasQuery = function(alias) {
+    // Needs a promise lib e.g.  var q = require("q");
+    var defer = q.defer();
+    // do stuff
+    defer.resolve();
+    return defer.promise;
 };
 as.listen(8010);
 ```

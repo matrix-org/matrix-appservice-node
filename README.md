@@ -9,8 +9,8 @@ var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration
 
 // creating registration files
 var reg = new AppServiceRegistration("http://localhost:8010");
-reg.setHomeserverToken(reg.generateToken());
-reg.setAppServiceToken(reg.generateToken());
+reg.setHomeserverToken(AppServiceRegistration.generateToken());
+reg.setAppServiceToken(AppServiceRegistration.generateToken());
 reg.addRegexPattern("users", "@.*", true);
 reg.outputAsYaml("registration.yaml");
 

@@ -1,13 +1,14 @@
 {
   "name": "matrix-appservice",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Matrix Application Service Framework",
   "main": "./index",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "jshint -c .jshint lib && gjslint --unix_mode --disable 0131,0211,0200,0222 --max_line_length 90 -r lib/"
   },
   "repository": {
     "url": "https://github.com/matrix-org/matrix-appservice-node"
@@ -16,12 +17,15 @@
     "matrix-org"
   ],
   "author": "matrix.org",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
-    "morgan": "~1.5.1",
+    "body-parser": "~1.12.0",
     "express": "~4.12.0",
-    "request": "~2.53.0",
-    "q": "~1.2.0",
-    "body-parser": "~1.12.0"
+    "js-yaml": "^3.2.7",
+    "morgan": "~1.5.1",
+    "request": "~2.53.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.3.2"
   }
 }

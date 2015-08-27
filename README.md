@@ -41,5 +41,5 @@ as.listen(8010);
 API Reference
 =============
 
-A hosted API reference can be found on [GitHub Pages](http://matrix-org.github.io/matrix-appservice-node/matrix-appservice/0.2.0/).
+A hosted API reference can be found on [GitHub Pages](http://matrix-org.github.io/matrix-appservice-node/index.html).
 

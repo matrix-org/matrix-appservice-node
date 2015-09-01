@@ -7,9 +7,9 @@
     "test": "tests"
   },
   "scripts": {
+    "gendoc": "jsdoc -r lib -R README.md -P package.json -d .jsdoc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gendoc": "jsdoc -r lib -P package.json -R README.md",
-    "lint": "jshint -c .jshint lib && gjslint --unix_mode --disable 0131,0211,0200,0222 --max_line_length 90 -r lib/"
+    "lint": "eslint lib/"
   },
   "repository": {
     "url": "https://github.com/matrix-org/matrix-appservice-node"
@@ -27,6 +27,7 @@
     "request": "~2.53.0"
   },
   "devDependencies": {
-    "jsdoc": "^3.3.2"
+    "jsdoc": "^3.3.2",
+    "eslint": "^1.3.1"
   }
 }

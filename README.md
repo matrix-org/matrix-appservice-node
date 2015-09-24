@@ -3,8 +3,8 @@ This is a Matrix Application Service framework written in Node.js.
 This can be used to quickly setup performant application services for almost 
 anything you can think of in a web framework agnostic way.
 
+To create an app service registration file:
 ``` javascript
-var AppService = require("matrix-appservice").AppService;
 var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration;
 
 // creating registration files
@@ -14,7 +14,13 @@ reg.setAppServiceToken(AppServiceRegistration.generateToken());
 reg.setSenderLocalpart("example-appservice");
 reg.addRegexPattern("users", "@.*", true);
 reg.outputAsYaml("registration.yaml");
+```
 
+You only need to generate a registration once, provided the registration info does not
+change. Once you have generated a registration, you can run the app service like so:
+
+```javascript
+var AppService = require("matrix-appservice").AppService;
 // listening
 var as = new AppService({
   homeserverToken: "abcd653bac492087d3c87"

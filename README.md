@@ -8,7 +8,8 @@ To create an app service registration file:
 var AppServiceRegistration = require("matrix-appservice").AppServiceRegistration;
 
 // creating registration files
-var reg = new AppServiceRegistration("http://localhost:8010");
+var reg = new AppServiceRegistration();
+reg.setAppServiceUrl("http://localhost:8010");
 reg.setHomeserverToken(AppServiceRegistration.generateToken());
 reg.setAppServiceToken(AppServiceRegistration.generateToken());
 reg.setSenderLocalpart("example-appservice");

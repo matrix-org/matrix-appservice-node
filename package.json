@@ -1,6 +1,6 @@
 {
   "name": "matrix-appservice",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Matrix Application Service Framework",
   "main": "./index",
   "directories": {

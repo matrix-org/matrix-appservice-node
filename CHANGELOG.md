@@ -1,3 +1,8 @@
+v0.3.0
+------
+`AppServiceRegistration`:
+ * Require an ID to be set with the `setId` method.
+
 v0.2.3
 ------
 `AppServiceRegistration`:

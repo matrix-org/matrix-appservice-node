@@ -1,3 +1,8 @@
+v0.3.1
+------
+`AppServiceRegistration`:
+ * Bug fix which prevented registration files from being loaded correctly.
+
 v0.3.0
 ------
 `AppServiceRegistration`:

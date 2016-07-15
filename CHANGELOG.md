@@ -1,3 +1,8 @@
+v0.3.2
+------
+Expanded `AppService.listen` to accept more parameters to control how the service
+listens for connections.
+
 v0.3.1
 ------
 `AppServiceRegistration`:

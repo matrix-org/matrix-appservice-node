@@ -1,3 +1,10 @@
+v0.3.3
+------
+`AppService`:
+ * Redact access tokens in the AppService logs.
+`AppServiceRegistration`:
+ * Added a flag to indicate to the HS not to rate limit the AS client or any users belonging to the AS. The default is set to `true`. Set by calling `setRateLimited(false)`.
+
 v0.3.2
 ------
 Expanded `AppService.listen` to accept more parameters to control how the service

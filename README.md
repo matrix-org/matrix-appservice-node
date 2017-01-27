@@ -45,6 +45,12 @@ as.onAliasQuery = function(alias) {
 as.listen(8010);
 ```
 
+TLS Connections
+===============
+If `MATRIX_AS_TLS_KEY` and `MATRIX_AS_TLS_CERT` environment variables are
+defined and point to valid tls key and cert files, the AS will listen using
+an HTTPS listener.
+
 API Reference
 =============
 

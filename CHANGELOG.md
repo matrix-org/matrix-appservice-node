@@ -1,3 +1,10 @@
+v0.3.4
+------
+`AppServiceRegistration`:
+ * Added `getProtocols()` and `setProtocols(string[])`. (Thanks @Half-Shot!)
+`AppService`:
+ * Add HTTPS support if the environment variables `MATRIX_AS_TLS_KEY` and `MATRIX_AS_TLS_CERT` exist. (Thanks @AndrewJDR!)
+
 v0.3.3
 ------
 `AppService`:

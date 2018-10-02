@@ -1,3 +1,9 @@
+v0.3.5
+------
+
+Updated `body-parser`, `express`, `morgan` and `request` packages to fix security vulnerabilities.
+
+
 v0.3.4
 ------
 `AppServiceRegistration`:

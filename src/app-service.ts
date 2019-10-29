@@ -73,8 +73,6 @@ export class AppService extends EventEmitter {
         this.app = app;
     }
 
-
-
     /***
      * Begin listening on the specified port.
      * @param {Number} port The port to listen on.
@@ -136,6 +134,37 @@ export class AppService extends EventEmitter {
         return util.promisify(this.server.close).apply(this.server);
     }
 
+
+    /**
+     * Override this method to handle alias queries.
+     * @param {string} alias The queried room alias
+     * @param {Function} callback The callback to invoke when complete.
+     * @return {Promise} A promise to resolve when complete (if callback isn't supplied)
+     */
+    public onAliasQuery(alias: string, callback: () => void): PromiseLike<void>|null {
+        callback(); // stub impl
+        return null;
+    }
+
+    /**
+     * Override this method to handle user queries.
+     * @param {string} userId The queried user ID.
+     * @param {Function} callback The callback to invoke when complete.
+     * @return {Promise} A promise to resolve when complete (if callback isn't supplied)
+     */
+    public onUserQuery(userId: string, callback: () => void): PromiseLike<void>|null {
+        callback(); // stub impl
+        return null;
+    }
+
+    /**
+     * Set the token that should be used to verify incoming events.
+     * @param {string} hsToken The home server token
+     */
+    public setHomeserverToken(hsToken: string) {
+        this.config.homeserverToken = hsToken;
+    }
+
     private onMorganLog(str: string) {
         const redactedStr = str.replace(/access_token=.*?(&|\s|$)/, "access_token=<REDACTED>$1");
         this.emit("http-log", redactedStr);
@@ -152,7 +181,6 @@ export class AppService extends EventEmitter {
         }
         return false;
     }
-
 
     private async onGetUsers(req: Request, res: Response) {
         if (this.isInvalidToken(req, res)) {
@@ -224,35 +252,5 @@ export class AppService extends EventEmitter {
         }
         this.lastProcessedTxnId = txnId;
         res.send({});
-    }
-
-    /**
-     * Override this method to handle alias queries.
-     * @param {string} alias The queried room alias
-     * @param {Function} callback The callback to invoke when complete.
-     * @return {Promise} A promise to resolve when complete (if callback isn't supplied)
-     */
-    public onAliasQuery(alias: string, callback: () => void): PromiseLike<void>|null {
-        callback(); // stub impl
-        return null;
-    }
-
-    /**
-     * Override this method to handle user queries.
-     * @param {string} userId The queried user ID.
-     * @param {Function} callback The callback to invoke when complete.
-     * @return {Promise} A promise to resolve when complete (if callback isn't supplied)
-     */
-    public onUserQuery(userId: string, callback: () => void): PromiseLike<void>|null {
-        callback(); // stub impl
-        return null;
-    }
-
-    /**
-     * Set the token that should be used to verify incoming events.
-     * @param {string} hsToken The home server token
-     */
-    private setHomeserverToken(hsToken: string) {
-        this.config.homeserverToken = hsToken;
     }
 }

@@ -9,7 +9,7 @@ import { Server } from "http";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
-class AppService extends EventEmitter {
+export class AppService extends EventEmitter {
     /**
      * An HTTP log line.
      * @event AppService#http-log
@@ -42,7 +42,7 @@ class AppService extends EventEmitter {
 
     private app: Application;
     private server?: Server;
-    private lastProcessedTxnId: string = "";
+    private lastProcessedTxnId = "";
     /**
      * Construct a new application service.
      * @constructor
@@ -53,7 +53,7 @@ class AppService extends EventEmitter {
      * incoming HTTP request. Default: 5000000.
      * @throws If a homeserver token is not supplied.
      */
-    constructor (private config: { homeserverToken: string, httpMaxSizeBytes: number}) {
+    constructor (private config: { homeserverToken: string; httpMaxSizeBytes: number}) {
         super();
         const app = express();
         app.use(morgan("combined", {
@@ -100,7 +100,7 @@ class AppService extends EventEmitter {
                 throw new Error("Could not open MATRIX_AS_TLS_CERT: " + tlsCert);
             }
 
-            var options = {
+            const options = {
                 key  : fs.readFileSync(tlsKey),
                 cert : fs.readFileSync(tlsCert)
             };

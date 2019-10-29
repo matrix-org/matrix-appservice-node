@@ -9,7 +9,7 @@
   "scripts": {
     "gendoc": "jsdoc -r lib -R README.md -P package.json -d .jsdoc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint lib/",
+    "lint": "eslint -c .eslintrc --max-warnings 0 src/**/*.ts",
     "postinstall": "npm run build",
     "build": "tsc --project tsconfig.json"
   },
@@ -22,6 +22,8 @@
   "author": "matrix.org",
   "license": "Apache-2.0",
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "js-yaml": "^3.2.7",
@@ -34,7 +36,7 @@
     "@types/js-yaml": "^3.12.1",
     "@types/morgan": "^1.7.37",
     "@types/node": "^10.17.0",
-    "eslint": "^3.19.0",
+    "eslint": "^5.16.0",
     "jsdoc": "^3.3.2",
     "typescript": "^3.6.4"
   }

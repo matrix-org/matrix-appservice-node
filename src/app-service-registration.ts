@@ -24,11 +24,12 @@ export class AppServiceRegistration {
      * @return {?AppServiceRegistration} The registration or null if the object
      * cannot be coerced into a registration.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static fromObject(obj: any): AppServiceRegistration|null {
         if (!obj.url) {
             return null;
         }
-        var reg = new AppServiceRegistration(obj.url);
+        const reg = new AppServiceRegistration(obj.url);
         reg.setId(obj.id);
         reg.setHomeserverToken(obj.hs_token);
         reg.setAppServiceToken(obj.as_token);
@@ -60,11 +61,11 @@ export class AppServiceRegistration {
     private hs_token: string|null = null;
     private as_token: string|null = null;
     private sender_localpart: string|null = null;
-    private rate_limited: boolean = true;
+    private rate_limited = true;
     private namespaces: {
-        users: RegexObj[],
-        aliases: RegexObj[],
-        rooms: RegexObj[],
+        users: RegexObj[];
+        aliases: RegexObj[];
+        rooms: RegexObj[];
     } = { users: [], aliases: [], rooms: []};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
@@ -184,7 +185,7 @@ export class AppServiceRegistration {
             throw new Error("'type' must be 'users', 'rooms' or 'aliases'");
         }
 
-        var regexObject = {
+        const regexObject = {
             exclusive: Boolean(exclusive),
             regex: regex
         };
@@ -198,7 +199,7 @@ export class AppServiceRegistration {
      * @throws If required fields hs_token, as_token, url are missing.
      */
     public outputAsYaml(filename: string) {
-        var reg = this.getOutput();
+        const reg = this.getOutput();
         fs.writeFileSync(filename, yaml.safeDump(reg));
     }
 
@@ -258,16 +259,16 @@ export class AppServiceRegistration {
         return this._isMatch(this.namespaces.rooms, roomId, onlyExclusive);
     }
 
-    public _isMatch(regexList: RegexObj[], sample: string, onlyExclusive :boolean) {
+    public _isMatch(regexList: RegexObj[], sample: string, onlyExclusive: boolean) {
         onlyExclusive = Boolean(onlyExclusive);
-        for (var i = 0; i < regexList.length; i++) {
-            var regex = this.cachedRegex[regexList[i].regex];
+        for (const regexObj of regexList) {
+            let regex = this.cachedRegex[regexObj.regex];
             if (!regex) {
-                regex = new RegExp(regexList[i].regex);
-                this.cachedRegex[regexList[i].regex] = regex;
+                regex = new RegExp(regexObj.regex);
+                this.cachedRegex[regexObj.regex] = regex;
             }
             if (regex.test(sample)) {
-                if (onlyExclusive && !regexList[i].exclusive) {
+                if (onlyExclusive && !regexObj.exclusive) {
                     continue;
                 }
                 return true;

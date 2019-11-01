@@ -5,15 +5,12 @@
     "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
-    "declaration": false,
-    "sourceMap": true,
+    "declaration": true,
+    "sourceMap": false,
     "outDir": "./lib",
     "composite": false,
     "strict": true,
-    "esModuleInterop": true,
-    "typeRoots": [
-      "./types"
-    ]
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"

@@ -1,3 +1,10 @@
+v0.4.0
+------
+
+- **The library is now written in Typescript**.
+  This change should not cause any breakages, as the library will
+  compile itself on installation via the `postinstall` script.
+
 v0.3.5
 ------
 

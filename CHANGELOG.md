@@ -1,3 +1,8 @@
+v0.4.1
+------
+
+- Fixed an issue which caused the package to fail to install.
+
 v0.4.0
 ------
 

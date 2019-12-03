@@ -53,7 +53,7 @@ export class AppService extends EventEmitter {
      * incoming HTTP request. Default: 5000000.
      * @throws If a homeserver token is not supplied.
      */
-    constructor (private config: { homeserverToken: string; httpMaxSizeBytes: number}) {
+    constructor (private config: { homeserverToken: string; httpMaxSizeBytes?: number}) {
         super();
         const app = express();
         app.use(morgan("combined", {

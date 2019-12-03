@@ -66,6 +66,9 @@ export class AppService extends EventEmitter {
             limit: this.config.httpMaxSizeBytes || MAX_SIZE_BYTES,
         }));
 
+        app.get("/_matrix/app/v1/users/:userId", this.onGetUsers.bind(this));
+        app.get("/_matrix/app/v1/rooms/:alias", this.onGetRoomAlias.bind(this));
+        app.put("/_matrix/app/v1/transactions/:txnId", this.onTransaction.bind(this));
         app.get("/users/:userId", this.onGetUsers.bind(this));
         app.get("/rooms/:alias", this.onGetRoomAlias.bind(this));
         app.put("/transactions/:txnId", this.onTransaction.bind(this));

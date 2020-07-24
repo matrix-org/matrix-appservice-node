@@ -58,10 +58,10 @@ export class AppServiceRegistration {
      * @param {string} appServiceUrl The base URL the AS can be reached via.
      */
     private id: string|null = null;
-    private hs_token: string|null = null;
-    private as_token: string|null = null;
-    private sender_localpart: string|null = null;
-    private rate_limited = true;
+    private hsToken: string|null = null;
+    private asToken: string|null = null;
+    private senderLocalpart: string|null = null;
+    private rateLimited = true;
     private namespaces: {
         users: RegexObj[];
         aliases: RegexObj[];
@@ -117,7 +117,7 @@ export class AppServiceRegistration {
      * @param {string} token The token
      */
     public setHomeserverToken(token: string) {
-        this.hs_token = token;
+        this.hsToken = token;
     }
 
     /**
@@ -125,7 +125,7 @@ export class AppServiceRegistration {
      * @return {?string} The token
      */
     public getHomeserverToken() {
-        return this.hs_token;
+        return this.hsToken;
     }
 
     /**
@@ -133,7 +133,7 @@ export class AppServiceRegistration {
      * @param {string} token The token
      */
     public setAppServiceToken(token: string) {
-        this.as_token = token;
+        this.asToken = token;
     }
 
     /**
@@ -141,7 +141,7 @@ export class AppServiceRegistration {
      * @return {?string} The token
      */
     public getAppServiceToken() {
-        return this.as_token;
+        return this.asToken;
     }
 
     /**
@@ -149,7 +149,7 @@ export class AppServiceRegistration {
      * @param {string} localpart The user_id localpart ("alice" in "@alice:domain")
      */
     public setSenderLocalpart(localpart: string) {
-        this.sender_localpart = localpart;
+        this.senderLocalpart = localpart;
     }
 
     /**
@@ -158,7 +158,7 @@ export class AppServiceRegistration {
      * rate limiting, false to disable.
      */
     public setRateLimited(isRateLimited: boolean) {
-        this.rate_limited = isRateLimited;
+        this.rateLimited = isRateLimited;
     }
 
     /**
@@ -166,7 +166,7 @@ export class AppServiceRegistration {
      * @return {?string} The user_id localpart ("alice" in "@alice:domain")
      */
     public getSenderLocalpart() {
-        return this.sender_localpart;
+        return this.senderLocalpart;
     }
 
     /**
@@ -209,19 +209,19 @@ export class AppServiceRegistration {
      * @throws If required fields hs_token, as-token, url, sender_localpart are missing.
      */
     public getOutput() {
-        if (!this.id || !this.hs_token || !this.as_token || !this.url || !this.sender_localpart) {
+        if (!this.id || !this.hsToken || !this.asToken || !this.url || !this.senderLocalpart) {
             throw new Error(
                 "Missing required field(s): id, hs_token, as_token, url, sender_localpart"
             );
         }
         return {
             id: this.id,
-            hs_token: this.hs_token,
-            as_token: this.as_token,
+            hs_token: this.hsToken,
+            as_token: this.asToken,
             namespaces: this.namespaces,
             url: this.url,
-            sender_localpart: this.sender_localpart,
-            rate_limited: this.rate_limited,
+            sender_localpart: this.senderLocalpart,
+            rate_limited: this.rateLimited,
             protocols: this.protocols,
         };
     }

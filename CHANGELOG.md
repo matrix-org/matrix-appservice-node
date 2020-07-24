@@ -1,3 +1,13 @@
+ 0.4.2 (2020-07-24)
+===================
+
+Internal Changes
+----------------
+
+- Start using towncrier for changelogs ([\#23](https://github.com/matrix-org/matrix-appservice-node/issues/23))
+- Update packages. ([\#24](https://github.com/matrix-org/matrix-appservice-node/issues/24))
+
+
 v0.4.1
 ======
 

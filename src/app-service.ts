@@ -40,7 +40,7 @@ export class AppService extends EventEmitter {
      * });
      */
 
-    private app: Application;
+    public readonly app: Application;
     private server?: Server;
     private lastProcessedTxnId = "";
     /**

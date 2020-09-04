@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "scripts": {
-    "gendoc": "jsdoc -r lib -R README.md -P package.json -d .jsdoc",
+    "gendoc": "typedoc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint -c .eslintrc --max-warnings 0 src/**/*.ts",
     "build": "tsc --project tsconfig.json",
@@ -37,7 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "eslint": "^7.8.1",
-    "jsdoc": "^3.6.5",
+    "typedoc": "^0.18.0",
     "typescript": "^3.9.7"
   }
 }

@@ -164,7 +164,7 @@ export class AppService extends EventEmitter {
         this.config.homeserverToken = hsToken;
     }
 
-    public expressApp() {
+    public get expressApp() {
         return this.app;
     }
 

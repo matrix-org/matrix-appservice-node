@@ -114,13 +114,9 @@ export class AppService extends EventEmitter {
             this.server = serverApp.listen(port, hostname, backlog, callback);
             return;
         }
-        return new Promise((resolve, reject) => {
-            this.server = serverApp.listen(port, hostname, backlog, (err: Error|null) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
+        return new Promise((resolve) => {
+            this.server = serverApp.listen(port, hostname, backlog, () => {
+                resolve();
             });
         });
     }
@@ -166,6 +162,10 @@ export class AppService extends EventEmitter {
      */
     public setHomeserverToken(hsToken: string) {
         this.config.homeserverToken = hsToken;
+    }
+
+    public expressApp() {
+        return this.app;
     }
 
     private onMorganLog(str: string) {

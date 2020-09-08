@@ -5,7 +5,7 @@ import util from "util";
 import { EventEmitter } from "events";
 import fs from "fs";
 import https from "https";
-import { Server } from "http";
+import { Server, default as http } from "http";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
@@ -87,7 +87,7 @@ export class AppService extends EventEmitter {
     public listen(port: number, hostname: string, backlog: number, callback?: () => void) {
         const tlsKey = process.env.MATRIX_AS_TLS_KEY;
         const tlsCert = process.env.MATRIX_AS_TLS_CERT;
-        let serverApp: Server|Application;
+        let serverApp: Server;
         if (tlsKey || tlsCert) {
             if (!(tlsKey && tlsCert)) {
                 throw new Error("MATRIX_AS_TLS_KEY and MATRIX_AS_TLS_CERT should be defined together!");
@@ -108,20 +108,20 @@ export class AppService extends EventEmitter {
             serverApp = https.createServer(options, this.app);
         }
         else {
-            serverApp = this.app;
+            serverApp = http.createServer({}, this.app);
         }
         if (callback) {
             this.server = serverApp.listen(port, hostname, backlog, callback);
             return;
         }
         return new Promise((resolve, reject) => {
-            this.server = serverApp.listen(port, hostname, backlog, (err: Error|null) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
+            serverApp.on("error", (err) => {
+                reject(err)
             });
+            serverApp.on("listening", () => {
+                resolve();
+            });
+            this.server = serverApp.listen(port, hostname, backlog);
         });
     }
 
@@ -166,6 +166,10 @@ export class AppService extends EventEmitter {
      */
     public setHomeserverToken(hsToken: string) {
         this.config.homeserverToken = hsToken;
+    }
+
+    public get expressApp() {
+        return this.app;
     }
 
     private onMorganLog(str: string) {

@@ -1,0 +1,1 @@
+Expose `AppService.expressApp`

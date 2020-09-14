@@ -47,17 +47,9 @@ export declare interface AppService {
 }
 
 export class AppService extends EventEmitter {
-   
     /**
-     * An incoming Matrix JSON event, filtered by <code>event.type</code>
-     * @event AppService#type:event
-     * @type {Object}
-     * @example
-     * appService.on("type:m.room.message", function(ev) {
-     *   console.log("Body: %s", ev.content.body);
-     * });
+     * @deprecated Use `AppService.expressApp`
      */
-
     public readonly app: Application;
     private server?: Server;
     private lastProcessedTxnId = "";
@@ -186,6 +178,10 @@ export class AppService extends EventEmitter {
         this.config.homeserverToken = hsToken;
     }
 
+    /**
+     * The Express App instance for the appservice, which
+     * can be extended with paths.
+     */
     public get expressApp() {
         return this.app;
     }

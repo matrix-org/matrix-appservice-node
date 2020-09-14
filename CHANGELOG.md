@@ -1,4 +1,21 @@
- 0.4.2 (2020-07-24)
+ 0.5.0 (2020-09-14)
+===================
+
+Features
+--------
+
+- Expose `AppService.app` so that services may add their own Express request handlers. ([\#26](https://github.com/matrix-org/matrix-appservice-node/issues/26))
+- Expose `AppService.expressApp` ([\#27](https://github.com/matrix-org/matrix-appservice-node/issues/27))
+- Documentation is now generated for Typescript files ([\#28](https://github.com/matrix-org/matrix-appservice-node/issues/28))
+
+
+Internal Changes
+----------------
+
+- Remove `request` dependency ([\#25](https://github.com/matrix-org/matrix-appservice-node/issues/25))
+
+
+0.4.2 (2020-07-24)
 ===================
 
 Internal Changes

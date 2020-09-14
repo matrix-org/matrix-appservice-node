@@ -50,5 +50,5 @@ an HTTPS listener.
 
 ### API Reference
 
-A hosted API reference can be found on [GitHub Pages](http://matrix-org.github.io/matrix-appservice-node/index.html).
+A hosted API reference can be found on [GitHub Pages](https://matrix-org.github.io/matrix-appservice-node/index.html).
 

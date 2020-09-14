@@ -33,3 +33,5 @@ config.js
 
 # Typescript
 lib/
+
+.typedoc

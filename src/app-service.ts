@@ -9,26 +9,44 @@ import { Server, default as http } from "http";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
-export class AppService extends EventEmitter {
+export declare interface AppService {
     /**
-     * An HTTP log line.
-     * @event AppService#http-log
-     * @type {String}
-     * @example
-     * appService.on("http-log", function(logLine) {
-     *   console.log(logLine);
-     * });
-     */
-
-    /**
-     * An incoming Matrix JSON event.
-     * @event AppService#event
-     * @type {Object}
+     * Emitted when an event is pushed to the appservice.
+     * The format of the event object is documented at
+     * https://matrix.org/docs/spec/application_service/r0.1.2#put-matrix-app-v1-transactions-txnid
+     * @event
      * @example
      * appService.on("event", function(ev) {
      *   console.log("ID: %s", ev.event_id);
      * });
      */
+    on(event: "event", cb: (event: Record<string, unknown>) => void): this;
+    /**
+     * Emitted when the HTTP listener logs some information.
+     * `access_tokens` are stripped from requests
+     * @event
+     * @example
+     * appService.on("http-log", function(line) {
+     *   console.log(line);
+     * });
+     */
+    on(event: "http-log", cb: (line: string) => void): this;
+    /**
+     * Emitted when an event of a particular type is pushed
+     * to the appservice. This will be emitted *in addition*
+     * to "event", so ensure your bridge deduplicates events.
+     * @event
+     * @param event Should start with "type:"
+     * @example
+     * appService.on("type:m.room.message", function(event) {
+     *   console.log("ID: %s", ev.content.body);
+     * });
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    on(event: string, cb: (event: Record<string, unknown>) => void): this;
+}
+
+export class AppService extends EventEmitter {
    
     /**
      * An incoming Matrix JSON event, filtered by <code>event.type</code>

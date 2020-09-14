@@ -17,5 +17,12 @@
   ],
   "exclude": [
     "index.js"
-  ]
+  ],
+  "typedocOptions": {
+    "mode": "library",
+    "out": ".typedoc",
+    "excludePrivate": true,
+    "excludeNotExported": false,
+    "exclude": ["**/index.ts"]
+  }
 }

@@ -1,0 +1,1 @@
+Documentation is now generated for Typescript files

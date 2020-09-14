@@ -20,7 +20,7 @@ export declare interface AppService {
      *   console.log("ID: %s", ev.event_id);
      * });
      */
-    on(event: "event", cb: (event: any) => void): this;
+    on(event: "event", cb: (event: Record<string, unknown>) => void): this;
     /**
      * Emitted when the HTTP listener logs some information.
      * `access_tokens` are stripped from requests
@@ -42,7 +42,8 @@ export declare interface AppService {
      *   console.log("ID: %s", ev.content.body);
      * });
      */
-    on(event: string, cb: (event: any) => void): this;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    on(event: string, cb: (event: Record<string, unknown>) => void): this;
 }
 
 export class AppService extends EventEmitter {

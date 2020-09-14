@@ -37,7 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "eslint": "^7.8.1",
-    "typedoc": "^0.18.0",
+    "typedoc": "^0.19.1",
     "typescript": "^3.9.7"
   }
 }

@@ -1,0 +1,157 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>matrix-appservice</title>
+	<meta name="description" content="Documentation for matrix-appservice">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">matrix-appservice</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>matrix-appservice</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p>This is a Matrix Application Service framework written in Node.js.</p>
+				<p>This can be used to quickly setup performant application services for almost
+				anything you can think of in a web framework agnostic way.</p>
+				<p>To create an app service registration file:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { AppServiceRegistration } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;matrix-appservice&quot;</span>);
+
+<span class="hljs-comment">// creating registration files</span>
+<span class="hljs-keyword">const</span> reg = <span class="hljs-keyword">new</span> AppServiceRegistration();
+reg.setAppServiceUrl(<span class="hljs-string">&quot;http://localhost:8010&quot;</span>);
+reg.setHomeserverToken(AppServiceRegistration.generateToken());
+reg.setAppServiceToken(AppServiceRegistration.generateToken());
+reg.setSenderLocalpart(<span class="hljs-string">&quot;example-appservice&quot;</span>);
+reg.addRegexPattern(<span class="hljs-string">&quot;users&quot;</span>, <span class="hljs-string">&quot;@.*&quot;</span>, <span class="hljs-literal">true</span>);
+reg.setProtocols([<span class="hljs-string">&quot;exampleservice&quot;</span>]); <span class="hljs-comment">// For 3PID lookups</span>
+reg.outputAsYaml(<span class="hljs-string">&quot;registration.yaml&quot;</span>);</code></pre>
+				<p>You only need to generate a registration once, provided the registration info does not
+				change. Once you have generated a registration, you can run the app service like so:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { AppService } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;matrix-appservice&quot;</span>);
+<span class="hljs-comment">// listening</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">as</span> = <span class="hljs-keyword">new</span> AppService({
+  <span class="hljs-attr">homeserverToken</span>: <span class="hljs-string">&quot;abcd653bac492087d3c87&quot;</span>
+});
+<span class="hljs-keyword">as</span>.on(<span class="hljs-string">&quot;type:m.room.message&quot;</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  <span class="hljs-comment">// handle the incoming message</span>
+});
+<span class="hljs-keyword">as</span>.onUserQuery = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">userId, callback</span>) </span>{
+  <span class="hljs-comment">// handle the incoming user query then respond</span>
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;RECV %s&quot;</span>, userId);
+  callback();
+};
+<span class="hljs-comment">// can also do this as a promise</span>
+<span class="hljs-keyword">as</span>.onAliasQuery = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">alias</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;RECV %s&quot;</span>, alias);
+};
+<span class="hljs-keyword">as</span>.listen(<span class="hljs-number">8010</span>);</code></pre>
+				<a href="#tls-connections" id="tls-connections" style="color: inherit; text-decoration: none;">
+					<h3>TLS Connections</h3>
+				</a>
+				<p>If <code>MATRIX_AS_TLS_KEY</code> and <code>MATRIX_AS_TLS_CERT</code> environment variables are
+					defined and point to valid tls key and cert files, the AS will listen using
+				an HTTPS listener.</p>
+				<a href="#api-reference" id="api-reference" style="color: inherit; text-decoration: none;">
+					<h3>API Reference</h3>
+				</a>
+				<p>A hosted API reference can be found on <a href="http://matrix-org.github.io/matrix-appservice-node/index.html">GitHub Pages</a>.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_app_service_.html">&quot;app-<wbr>service&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_app_service_registration_.html">&quot;app-<wbr>service-<wbr>registration&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

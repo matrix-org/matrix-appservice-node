@@ -255,11 +255,13 @@ export class AppService extends EventEmitter {
             res.send("Missing transaction ID.");
             return;
         }
-        if (!req.body || !req.body.events) {
-            res.send("Missing events body.");
+        if (!req.body) {
+            res.send("Missing body.");
             return;
         }
-        const events = req.body.events;
+
+        const events = req.body.events || [];
+        const ephemeral = req.body["de.sorunome.msc2409.ephemeral"] || [];
 
         if (this.lastProcessedTxnId === txnId) {
             res.send({}); // duplicate
@@ -269,6 +271,12 @@ export class AppService extends EventEmitter {
             this.emit("event", event);
             if (event.type) {
                 this.emit("type:" + event.type, event);
+            }
+        }
+        for (const event of ephemeral) {
+            this.emit("ephemeral", event);
+            if (event.type) {
+                this.emit("ephemeral_type:" + event.type, event);
             }
         }
         this.lastProcessedTxnId = txnId;

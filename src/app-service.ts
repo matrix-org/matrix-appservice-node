@@ -22,6 +22,17 @@ export declare interface AppService {
      */
     on(event: "event", cb: (event: Record<string, unknown>) => void): this;
     /**
+     * Emitted when an ephemeral event is pushed to the appservice.
+     * The format of the event object is documented at
+     * https://github.com/matrix-org/matrix-doc/pull/2409
+     * @event
+     * @example
+     * appService.on("ephemeral", function(ev) {
+     *   console.log("ID: %s", ev.type);
+     * });
+     */
+    on(event: "ephemeral", cb: (event: Record<string, unknown>) => void): this;
+    /**
      * Emitted when the HTTP listener logs some information.
      * `access_tokens` are stripped from requests
      * @event
@@ -42,7 +53,6 @@ export declare interface AppService {
      *   console.log("ID: %s", ev.content.body);
      * });
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     on(event: string, cb: (event: Record<string, unknown>) => void): this;
 }
 
@@ -194,6 +204,7 @@ export class AppService extends EventEmitter {
     private isInvalidToken(req: Request, res: Response): boolean {
         const providedToken = req.query.access_token;
         if (providedToken !== this.config.homeserverToken) {
+            res.status(403);
             res.send({
                 errcode: "M_FORBIDDEN",
                 error: "Bad token supplied,"

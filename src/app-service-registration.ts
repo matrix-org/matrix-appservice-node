@@ -36,6 +36,7 @@ export class AppServiceRegistration {
         reg.setSenderLocalpart(obj.sender_localpart);
         reg.setRateLimited(obj.rate_limited);
         reg.setProtocols(obj.protocols);
+        reg.pushEphemeral = obj["de.sorunome.msc2409.push_ephemeral"];
         if (obj.namespaces) {
             const kinds = ["users", "aliases", "rooms"];
             kinds.forEach((kind) => {
@@ -62,6 +63,11 @@ export class AppServiceRegistration {
     private asToken: string|null = null;
     private senderLocalpart: string|null = null;
     private rateLimited = true;
+    /**
+     * **Experimental**  
+     * Signal to the homeserver that this appservice will accept ephemeral events.
+     */
+    public pushEphemeral = false;
     private namespaces: {
         users: RegexObj[];
         aliases: RegexObj[];
@@ -223,6 +229,7 @@ export class AppServiceRegistration {
             sender_localpart: this.senderLocalpart,
             rate_limited: this.rateLimited,
             protocols: this.protocols,
+            "de.sorunome.msc2409.push_ephemeral": this.pushEphemeral,
         };
     }
 

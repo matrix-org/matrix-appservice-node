@@ -1,4 +1,13 @@
- 0.5.0 (2020-09-14)
+ 0.6.0 (2020-10-08)
+===================
+
+Features
+--------
+
+- Add experimental support for receiving ephemeral data from the homeserver (MSC2409) ([\#32](https://github.com/matrix-org/matrix-appservice-node/issues/32))
+
+
+0.5.0 (2020-09-14)
 ===================
 
 Features

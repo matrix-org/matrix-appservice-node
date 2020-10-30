@@ -198,6 +198,16 @@ export class AppServiceRegistration {
     }
 
     /**
+     * **Experimental**
+     * 
+     * Should the appservice receive ephemeral events. Note this requires
+     * a homeserver implementing MSC2409.
+     */
+    public pushEphemeralEnabled() {
+        return this.pushEphemeral || false;
+    }
+
+    /**
      * Get the desired user_id localpart for the app service itself.
      * @return {?string} The user_id localpart ("alice" in "@alice:domain")
      */

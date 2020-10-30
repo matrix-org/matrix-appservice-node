@@ -23,6 +23,7 @@ describe("AppServiceRegistration", () => {
             expect(reg.getProtocols()).to.be.null;
             expect(reg.isRateLimited()).to.be.true;
             expect(reg.pushEphemeral).to.be.undefined;
+            expect(reg.pushEphemeralEnabled()).to.be.false;
         });
 
         it("can import complete registration from object", () => {
@@ -61,6 +62,7 @@ describe("AppServiceRegistration", () => {
             expect(reg.getProtocols()).to.deep.equal(["irc", "gitter"]);
             expect(reg.isRateLimited()).to.be.false;
             expect(reg.pushEphemeral).to.be.true;
+            expect(reg.pushEphemeralEnabled()).to.be.true;
     
             expect(reg.isRoomMatch("!foo", true)).to.be.true;
     

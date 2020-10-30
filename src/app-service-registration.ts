@@ -7,6 +7,26 @@ interface RegexObj {
     exclusive: boolean;
 }
 
+interface AppServiceOutput {
+    url: string|null;
+    id: string;
+    // eslint-disable-next-line camelcase
+    hs_token: string;
+    // eslint-disable-next-line camelcase
+    as_token: string;
+    // eslint-disable-next-line camelcase
+    sender_localpart: string;
+    // eslint-disable-next-line camelcase
+    rate_limited?: boolean;
+    protocols?: string[]|null;
+    "de.sorunome.msc2409.push_ephemeral"?: boolean;
+    namespaces?: {
+        users?: RegexObj[];
+        rooms?: RegexObj[];
+        aliases?: RegexObj[];
+    }
+}
+
 export class AppServiceRegistration {
 
     /**
@@ -20,32 +40,31 @@ export class AppServiceRegistration {
         /**
      * Convert a JSON object to an AppServiceRegistration object.
      * @static
-     * @param {Object} obj The registration object
-     * @return {?AppServiceRegistration} The registration or null if the object
-     * cannot be coerced into a registration.
+     * @param obj The registration object
+     * @return The registration.
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static fromObject(obj: any): AppServiceRegistration|null {
+    public static fromObject(obj: AppServiceOutput): AppServiceRegistration {
         const reg = new AppServiceRegistration(obj.url);
         reg.setId(obj.id);
         reg.setHomeserverToken(obj.hs_token);
         reg.setAppServiceToken(obj.as_token);
         reg.setSenderLocalpart(obj.sender_localpart);
-        reg.setRateLimited(obj.rate_limited);
-        reg.setProtocols(obj.protocols);
+        if (obj.rate_limited !== undefined) reg.setRateLimited(obj.rate_limited);
+        if (obj.protocols) reg.setProtocols(obj.protocols);
         reg.pushEphemeral = obj["de.sorunome.msc2409.push_ephemeral"];
         if (obj.namespaces) {
-            const kinds = ["users", "aliases", "rooms"];
-            kinds.forEach((kind) => {
-                if (!obj.namespaces[kind]) {
-                    return;
+            const kinds: ("users"|"aliases"|"rooms")[] = ["users", "aliases", "rooms"];
+            for (const kind of kinds) {
+                const namespace = obj.namespaces[kind];
+                if (!namespace) {
+                    continue;
                 }
-                obj.namespaces[kind].forEach((regexObj: RegexObj) => {
+                namespace.forEach((regexObj: RegexObj) => {
                     reg.addRegexPattern(
-                        kind as "users"|"aliases"|"rooms", regexObj.regex, regexObj.exclusive,
+                        kind, regexObj.regex, regexObj.exclusive,
                     );
                 });
-            });
+            }
         }
         return reg;
     }

@@ -26,9 +26,6 @@ export class AppServiceRegistration {
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static fromObject(obj: any): AppServiceRegistration|null {
-        if (!obj.url) {
-            return null;
-        }
         const reg = new AppServiceRegistration(obj.url);
         reg.setId(obj.id);
         reg.setHomeserverToken(obj.hs_token);
@@ -75,7 +72,7 @@ export class AppServiceRegistration {
     } = { users: [], aliases: [], rooms: []};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
-    constructor (private url: string) { }
+    constructor (private url: string|null) { }
 
     /**
      * Set the URL which the home server will hit in order to talk to the AS.

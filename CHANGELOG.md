@@ -1,4 +1,13 @@
- 0.6.0 (2020-10-08)
+ 0.7.0 (2020-10-30)
+===================
+
+Bugfixes
+--------
+
+- Fix issue where `AppServiceRegistration.getOutput()` would fail if `de.sorunome.msc2409.push_ephemeral` is undefined. ([\#34](https://github.com/matrix-org/matrix-appservice-node/issues/34))
+
+
+0.6.0 (2020-10-08)
 ===================
 
 Features

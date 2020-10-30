@@ -7,6 +7,26 @@ interface RegexObj {
     exclusive: boolean;
 }
 
+interface AppServiceOutput {
+    url: string|null;
+    id: string;
+    // eslint-disable-next-line camelcase
+    hs_token: string;
+    // eslint-disable-next-line camelcase
+    as_token: string;
+    // eslint-disable-next-line camelcase
+    sender_localpart: string;
+    // eslint-disable-next-line camelcase
+    rate_limited?: boolean;
+    protocols?: string[]|null;
+    "de.sorunome.msc2409.push_ephemeral"?: boolean;
+    namespaces?: {
+        users?: RegexObj[];
+        rooms?: RegexObj[];
+        aliases?: RegexObj[];
+    }
+}
+
 export class AppServiceRegistration {
 
     /**
@@ -20,35 +40,31 @@ export class AppServiceRegistration {
         /**
      * Convert a JSON object to an AppServiceRegistration object.
      * @static
-     * @param {Object} obj The registration object
-     * @return {?AppServiceRegistration} The registration or null if the object
-     * cannot be coerced into a registration.
+     * @param obj The registration object
+     * @return The registration.
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public static fromObject(obj: any): AppServiceRegistration|null {
-        if (!obj.url) {
-            return null;
-        }
+    public static fromObject(obj: AppServiceOutput): AppServiceRegistration {
         const reg = new AppServiceRegistration(obj.url);
         reg.setId(obj.id);
         reg.setHomeserverToken(obj.hs_token);
         reg.setAppServiceToken(obj.as_token);
         reg.setSenderLocalpart(obj.sender_localpart);
-        reg.setRateLimited(obj.rate_limited);
-        reg.setProtocols(obj.protocols);
+        if (obj.rate_limited !== undefined) reg.setRateLimited(obj.rate_limited);
+        if (obj.protocols) reg.setProtocols(obj.protocols);
         reg.pushEphemeral = obj["de.sorunome.msc2409.push_ephemeral"];
         if (obj.namespaces) {
-            const kinds = ["users", "aliases", "rooms"];
-            kinds.forEach((kind) => {
-                if (!obj.namespaces[kind]) {
-                    return;
+            const kinds: ("users"|"aliases"|"rooms")[] = ["users", "aliases", "rooms"];
+            for (const kind of kinds) {
+                const namespace = obj.namespaces[kind];
+                if (!namespace) {
+                    continue;
                 }
-                obj.namespaces[kind].forEach((regexObj: RegexObj) => {
+                namespace.forEach((regexObj: RegexObj) => {
                     reg.addRegexPattern(
-                        kind as "users"|"aliases"|"rooms", regexObj.regex, regexObj.exclusive,
+                        kind, regexObj.regex, regexObj.exclusive,
                     );
                 });
-            });
+            }
         }
         return reg;
     }
@@ -62,20 +78,20 @@ export class AppServiceRegistration {
     private hsToken: string|null = null;
     private asToken: string|null = null;
     private senderLocalpart: string|null = null;
-    private rateLimited = true;
+    private rateLimited: boolean|undefined = undefined;
     /**
      * **Experimental**  
      * Signal to the homeserver that this appservice will accept ephemeral events.
      */
-    public pushEphemeral = false;
+    public pushEphemeral: boolean|undefined = undefined;
     private namespaces: {
-        users: RegexObj[];
-        aliases: RegexObj[];
-        rooms: RegexObj[];
-    } = { users: [], aliases: [], rooms: []};
+        users?: RegexObj[];
+        aliases?: RegexObj[];
+        rooms?: RegexObj[];
+    } = {};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
-    constructor (private url: string) { }
+    constructor (private url: string|null) { }
 
     /**
      * Set the URL which the home server will hit in order to talk to the AS.
@@ -83,6 +99,13 @@ export class AppServiceRegistration {
      */
     public setAppServiceUrl(url: string) {
         this.url = url;
+    }
+
+    /**
+     * Get the URL which the home server will hit in order to talk to the AS.
+     */
+    public getAppServiceUrl() {
+        return this.url;
     }
 
     /**
@@ -159,12 +182,29 @@ export class AppServiceRegistration {
     }
 
     /**
+     * Get whether requests from this AS are rate-limited by the home server.
+     */
+    public isRateLimited() {
+        return this.rateLimited === undefined ? true : this.rateLimited;
+    }
+
+    /**
      * Set whether requests from this AS are rate-limited by the home server.
      * @param {boolean} isRateLimited The flag which is set to true to enable rate
      * rate limiting, false to disable.
      */
     public setRateLimited(isRateLimited: boolean) {
         this.rateLimited = isRateLimited;
+    }
+
+    /**
+     * **Experimental**
+     * 
+     * Should the appservice receive ephemeral events. Note this requires
+     * a homeserver implementing MSC2409.
+     */
+    public pushEphemeralEnabled() {
+        return this.pushEphemeral || false;
     }
 
     /**
@@ -196,7 +236,12 @@ export class AppServiceRegistration {
             regex: regex
         };
 
-        this.namespaces[type].push(regexObject);
+        const namespace = this.namespaces[type];
+        if (namespace) {
+            namespace.push(regexObject);
+        } else {
+            this.namespaces[type] = [regexObject];
+        }
     }
 
     /**
@@ -211,26 +256,43 @@ export class AppServiceRegistration {
 
     /**
      * Get the key-value output which should be written to a YAML file.
-     * @return {Object}
      * @throws If required fields hs_token, as-token, url, sender_localpart are missing.
      */
-    public getOutput() {
-        if (!this.id || !this.hsToken || !this.asToken || !this.url || !this.senderLocalpart) {
+    public getOutput(): AppServiceOutput {
+        // Typescript will default any string array to a set of strings, even if it's a static array.
+        const requiredFields: ("id"|"hsToken"|"asToken"|"senderLocalpart")[] = [
+            "id", "hsToken", "asToken", "senderLocalpart"
+        ];
+        const missingFields = requiredFields.filter((key) => !this[key]);
+        if (missingFields.length) {
             throw new Error(
-                "Missing required field(s): id, hs_token, as_token, url, sender_localpart"
+                `Missing required field(s): ${missingFields}`
             );
         }
-        return {
-            id: this.id,
-            hs_token: this.hsToken,
-            as_token: this.asToken,
-            namespaces: this.namespaces,
+        const responseFormat: AppServiceOutput = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            id: this.id!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            hs_token: this.hsToken!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            as_token: this.asToken!,
             url: this.url,
-            sender_localpart: this.senderLocalpart,
-            rate_limited: this.rateLimited,
-            protocols: this.protocols,
-            "de.sorunome.msc2409.push_ephemeral": this.pushEphemeral,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            sender_localpart: this.senderLocalpart!,
         };
+        if (this.pushEphemeral !== undefined) {
+            responseFormat["de.sorunome.msc2409.push_ephemeral"] = this.pushEphemeral;
+        }
+        if (this.protocols) {
+            responseFormat.protocols = this.protocols;
+        }
+        if (Object.keys(this.namespaces).length > 0) {
+            responseFormat.namespaces = this.namespaces;
+        }
+        if(this.rateLimited !== undefined) {
+            responseFormat.rate_limited = this.rateLimited;
+        }
+        return responseFormat;
     }
 
     /**
@@ -266,7 +328,10 @@ export class AppServiceRegistration {
         return this._isMatch(this.namespaces.rooms, roomId, onlyExclusive);
     }
 
-    public _isMatch(regexList: RegexObj[], sample: string, onlyExclusive: boolean) {
+    public _isMatch(regexList: RegexObj[]|undefined, sample: string, onlyExclusive: boolean) {
+        if (!regexList) {
+            return false;
+        }
         onlyExclusive = Boolean(onlyExclusive);
         for (const regexObj of regexList) {
             let regex = this.cachedRegex[regexObj.regex];

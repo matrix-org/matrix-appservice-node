@@ -66,10 +66,10 @@ export class AppServiceRegistration {
      */
     public pushEphemeral = false;
     private namespaces: {
-        users: RegexObj[];
-        aliases: RegexObj[];
-        rooms: RegexObj[];
-    } = { users: [], aliases: [], rooms: []};
+        users?: RegexObj[];
+        aliases?: RegexObj[];
+        rooms?: RegexObj[];
+    } = {};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
     constructor (private url: string|null) { }
@@ -207,7 +207,12 @@ export class AppServiceRegistration {
             regex: regex
         };
 
-        this.namespaces[type].push(regexObject);
+        const namespace = this.namespaces[type];
+        if (namespace) {
+            namespace.push(regexObject);
+        } else {
+            this.namespaces[type] = [regexObject];
+        }
     }
 
     /**
@@ -294,7 +299,10 @@ export class AppServiceRegistration {
         return this._isMatch(this.namespaces.rooms, roomId, onlyExclusive);
     }
 
-    public _isMatch(regexList: RegexObj[], sample: string, onlyExclusive: boolean) {
+    public _isMatch(regexList: RegexObj[]|undefined, sample: string, onlyExclusive: boolean) {
+        if (!regexList) {
+            return false;
+        }
         onlyExclusive = Boolean(onlyExclusive);
         for (const regexObj of regexList) {
             let regex = this.cachedRegex[regexObj.regex];

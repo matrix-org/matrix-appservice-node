@@ -83,6 +83,13 @@ export class AppServiceRegistration {
     }
 
     /**
+     * Get the URL which the home server will hit in order to talk to the AS.
+     */
+    public getAppServiceUrl() {
+        return this.url;
+    }
+
+    /**
      * Set the ID of the appservice; must be unique across the homeserver and never change.
      * @param {string} id The ID
      */
@@ -153,6 +160,13 @@ export class AppServiceRegistration {
      */
     public setSenderLocalpart(localpart: string) {
         this.senderLocalpart = localpart;
+    }
+
+    /**
+     * Get whether requests from this AS are rate-limited by the home server.
+     */
+    public isRateLimited() {
+        return this.rateLimited === undefined ? true : this.rateLimited;
     }
 
     /**

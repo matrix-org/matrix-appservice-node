@@ -59,12 +59,12 @@ export class AppServiceRegistration {
     private hsToken: string|null = null;
     private asToken: string|null = null;
     private senderLocalpart: string|null = null;
-    private rateLimited = true;
+    private rateLimited: boolean|undefined = undefined;
     /**
      * **Experimental**  
      * Signal to the homeserver that this appservice will accept ephemeral events.
      */
-    public pushEphemeral = false;
+    public pushEphemeral: boolean|undefined = undefined;
     private namespaces: {
         users?: RegexObj[];
         aliases?: RegexObj[];

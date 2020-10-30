@@ -208,26 +208,43 @@ export class AppServiceRegistration {
 
     /**
      * Get the key-value output which should be written to a YAML file.
-     * @return {Object}
      * @throws If required fields hs_token, as-token, url, sender_localpart are missing.
      */
-    public getOutput() {
-        if (!this.id || !this.hsToken || !this.asToken || !this.url || !this.senderLocalpart) {
+    public getOutput(): AppServiceOutput {
+        // Typescript will default any string array to a set of strings, even if it's a static array.
+        const requiredFields: ("id"|"hsToken"|"asToken"|"senderLocalpart")[] = [
+            "id", "hsToken", "asToken", "senderLocalpart"
+        ];
+        const missingFields = requiredFields.filter((key) => !this[key]);
+        if (missingFields.length) {
             throw new Error(
-                "Missing required field(s): id, hs_token, as_token, url, sender_localpart"
+                `Missing required field(s): ${missingFields}`
             );
         }
-        return {
-            id: this.id,
-            hs_token: this.hsToken,
-            as_token: this.asToken,
-            namespaces: this.namespaces,
+        const responseFormat: AppServiceOutput = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            id: this.id!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            hs_token: this.hsToken!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            as_token: this.asToken!,
             url: this.url,
-            sender_localpart: this.senderLocalpart,
-            rate_limited: this.rateLimited,
-            protocols: this.protocols,
-            "de.sorunome.msc2409.push_ephemeral": this.pushEphemeral,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            sender_localpart: this.senderLocalpart!,
         };
+        if (this.pushEphemeral !== undefined) {
+            responseFormat["de.sorunome.msc2409.push_ephemeral"] = this.pushEphemeral;
+        }
+        if (this.protocols) {
+            responseFormat.protocols = this.protocols;
+        }
+        if (Object.keys(this.namespaces).length > 0) {
+            responseFormat.namespaces = this.namespaces;
+        }
+        if(this.rateLimited !== undefined) {
+            responseFormat.rate_limited = this.rateLimited;
+        }
+        return responseFormat;
     }
 
     /**

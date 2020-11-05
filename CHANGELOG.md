@@ -1,4 +1,13 @@
- 0.7.0 (2020-10-30)
+ 0.7.1 (2020-11-05)
+===================
+
+Internal Changes
+----------------
+
+- Export `AppServiceOutput` and `RegexObj` interfaces. ([\#35](https://github.com/matrix-org/matrix-appservice-node/issues/35))
+
+
+0.7.0 (2020-10-30)
 ===================
 
 Bugfixes

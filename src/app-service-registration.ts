@@ -2,12 +2,12 @@ import { randomBytes } from "crypto";
 import yaml from "js-yaml";
 import fs from "fs";
 
-interface RegexObj {
+export interface RegexObj {
     regex: string;
     exclusive: boolean;
 }
 
-interface AppServiceOutput {
+export interface AppServiceOutput {
     url: string|null;
     id: string;
     // eslint-disable-next-line camelcase

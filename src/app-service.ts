@@ -92,6 +92,7 @@ export class AppService extends EventEmitter {
         app.get("/users/:userId", this.onGetUsers.bind(this));
         app.get("/rooms/:alias", this.onGetRoomAlias.bind(this));
         app.put("/transactions/:txnId", this.onTransaction.bind(this));
+        app.get("/health", this.onHealthCheck.bind(this));
 
         this.app = app;
     }
@@ -292,5 +293,9 @@ export class AppService extends EventEmitter {
         }
         this.lastProcessedTxnId = txnId;
         res.send({});
+    }
+
+    private onHealthCheck(req: Request, res: Response) {
+        res.send('OK');
     }
 }

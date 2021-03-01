@@ -1,4 +1,13 @@
- 0.7.1 (2020-11-05)
+ 0.8.0 (2021-03-01)
+===================
+
+Features
+--------
+
+- Add health check endpoint ([\#38](https://github.com/matrix-org/matrix-appservice-node/issues/38))
+
+
+0.7.1 (2020-11-05)
 ===================
 
 Internal Changes

@@ -1,4 +1,14 @@
- 0.8.0 (2021-03-01)
+0.9.0 (2021-07-15)
+==================
+
+Internal Changes
+----------------
+
+- The `master` branch has been renamed to `develop` to be consistent wih other `matrix-org` projects. ([\#40](https://github.com/matrix-org/matrix-appservice-node/issues/40))
+- Update to Typescript 4.3.5 and update Typedoc. ([\#44](https://github.com/matrix-org/matrix-appservice-node/issues/44))
+
+
+0.8.0 (2021-03-01)
 ===================
 
 Features

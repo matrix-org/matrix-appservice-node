@@ -135,7 +135,7 @@ export class AppService extends EventEmitter {
             this.server = serverApp.listen(port, hostname, backlog, callback);
             return;
         }
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             serverApp.on("error", (err) => {
                 reject(err)
             });

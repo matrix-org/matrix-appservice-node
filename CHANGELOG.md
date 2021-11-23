@@ -1,3 +1,12 @@
+ 0.10.0 (2021-11-23)
+====================
+
+Internal Changes
+----------------
+
+- Update dependencies, including Typescript to `4.5.2` ([\#45](https://github.com/matrix-org/matrix-appservice-node/issues/45))
+
+
 0.9.0 (2021-07-15)
 ==================
 

@@ -251,7 +251,7 @@ export class AppServiceRegistration {
      */
     public outputAsYaml(filename: string) {
         const reg = this.getOutput();
-        fs.writeFileSync(filename, yaml.safeDump(reg));
+        fs.writeFileSync(filename, yaml.dump(reg));
     }
 
     /**

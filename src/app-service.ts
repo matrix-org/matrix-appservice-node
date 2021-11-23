@@ -136,12 +136,8 @@ export class AppService extends EventEmitter {
             return;
         }
         return new Promise<void>((resolve, reject) => {
-            serverApp.on("error", (err) => {
-                reject(err)
-            });
-            serverApp.on("listening", () => {
-                resolve();
-            });
+            serverApp.once("error", reject);
+            serverApp.once("listening", resolve);
             this.server = serverApp.listen(port, hostname, backlog);
         });
     }
@@ -231,7 +227,7 @@ export class AppService extends EventEmitter {
         } catch (e) {
             res.send({
                 errcode: "M_UNKNOWN",
-                error: e ? e.message : ""
+                error: e instanceof Error ? e.message : ""
             });
         }
     }
@@ -252,7 +248,7 @@ export class AppService extends EventEmitter {
         } catch (e) {
             res.send({
                 errcode: "M_UNKNOWN",
-                error: e ? e.message : ""
+                error: e instanceof Error ? e.message : ""
             });
         }
     }

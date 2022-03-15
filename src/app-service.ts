@@ -194,8 +194,12 @@ export class AppService extends EventEmitter {
     }
 
     private onMorganLog(str: string) {
-        const redactedStr = str.replace(/access_token=.*?(&|\s|$)/, "access_token=<REDACTED>$1");
-        this.emit("http-log", redactedStr);
+        // The dependency `morgan` expects to write to a stream and adds a new line at the end.
+        // Listeners of the `http-log` event expect there not to be a new line, so the string
+        // can be handed to a logger like `console.log()` without displaying empty lines.
+        str = str.replace(/\n$/, "");
+        str = str.replace(/access_token=.*?(&|\s|$)/, "access_token=<REDACTED>$1");
+        this.emit("http-log", str);
     }
 
     private isInvalidToken(req: Request, res: Response): boolean {

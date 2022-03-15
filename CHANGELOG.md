@@ -1,4 +1,13 @@
- 0.10.0 (2021-11-23)
+0.10.1 (2022-03-15)
+====================
+
+Bugfixes
+--------
+
+- Remove tailing new line on http-log events ([\#50](https://github.com/matrix-org/matrix-appservice-node/issues/50))
+
+
+0.10.0 (2021-11-23)
 ====================
 
 Internal Changes

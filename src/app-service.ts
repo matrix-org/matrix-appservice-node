@@ -203,7 +203,7 @@ export class AppService extends EventEmitter {
     }
 
     private isInvalidToken(req: Request, res: Response): boolean {
-        const providedToken = req.query.access_token;
+        const providedToken = req.headers.Authorization?.substring("Bearer ".length) ?? req.query.access_token;
         if (providedToken !== this.config.homeserverToken) {
             res.status(403);
             res.send({

@@ -1,4 +1,0 @@
-The project has been modernized to be in-line with our other matrix-org bridge repos. This means:
-  - We now use yarn for dependency management.
-  - We now use GitHub CI.
-  - There is a contributing file.

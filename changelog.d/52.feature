@@ -1,1 +1,0 @@
-Support Authorization headers ([MSC2832](https://github.com/matrix-org/matrix-spec-proposals/pull/2832)).

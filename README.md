@@ -1,7 +1,15 @@
+matrix-appservice-node
+======================
+
 This is a Matrix Application Service framework written in Node.js.
 
-This can be used to quickly setup performant application services for almost 
+This can be used to quickly setup performant application services for almost
 anything you can think of in a web framework agnostic way.
+
+If you are looking for a more fully-featured SDK for creating bridges,
+you may want to check out [matrix-appservice-bridge](https://github.com/matrix-org/matrix-appservice-bridge) instead.
+
+### Example
 
 To create an app service registration file:
 ```javascript

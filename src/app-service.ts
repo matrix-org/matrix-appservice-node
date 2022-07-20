@@ -228,10 +228,13 @@ export class AppService extends EventEmitter {
         try {
             await possiblePromise;
             res.send({});
-        } catch (e) {
+        } catch (e: any) {
+            const parsed = parseInt(e.status);
+            const status = isNaN(parsed) ? 400 : parsed;
+            res.status(status);
             res.send({
-                errcode: "M_UNKNOWN",
-                error: e instanceof Error ? e.message : ""
+                errcode: e.errorcode ? e.errorcode : "M_UNKNOWN",
+                message: e.message ? e.message : "",
             });
         }
     }

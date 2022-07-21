@@ -6,6 +6,7 @@ import { EventEmitter } from "events";
 import fs from "fs";
 import https from "https";
 import { Server, default as http } from "http";
+import { isMatrixHttpError } from "./MatrixHttpError";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
@@ -229,13 +230,19 @@ export class AppService extends EventEmitter {
             await possiblePromise;
             res.send({});
         } catch (e: any) {
-            const parsed = parseInt(e.status);
-            const status = isNaN(parsed) ? 500 : parsed;
-            res.status(status);
-            res.send({
-                errcode: e.errorcode ? e.errorcode : "M_UNKNOWN",
-                message: e.message ? e.message : "",
-            });
+            if (isMatrixHttpError(e)) {
+                res.status(e.status);
+                res.send({
+                    errcode: e.errorcode,
+                    message: e.message,
+                });
+            } else {
+                res.status(500);
+                res.send({
+                    errcode: "M_UNKNOWN",
+                    message: e instanceof Error ? e.message : "",
+                });    
+            }
         }
     }
 

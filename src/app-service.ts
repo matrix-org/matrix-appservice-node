@@ -230,7 +230,7 @@ export class AppService extends EventEmitter {
             res.send({});
         } catch (e: any) {
             const parsed = parseInt(e.status);
-            const status = isNaN(parsed) ? 400 : parsed;
+            const status = isNaN(parsed) ? 500 : parsed;
             res.status(status);
             res.send({
                 errcode: e.errorcode ? e.errorcode : "M_UNKNOWN",

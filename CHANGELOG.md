@@ -1,3 +1,23 @@
+1.0.0 (2022-07-20)
+==================
+
+**This release drops support for Node 12 and adds support for Node 18**
+
+Features
+--------
+
+- Support Authorization headers ([MSC2832](https://github.com/matrix-org/matrix-spec-proposals/pull/2832)). ([\#52](https://github.com/matrix-org/matrix-appservice-node/issues/52))
+
+
+Internal Changes
+----------------
+
+- The project has been modernized to be in-line with our other matrix-org bridge repos. This means:
+    - We now use yarn for dependency management.
+    - We now use GitHub CI.
+    - There is a contributing file. ([\#57](https://github.com/matrix-org/matrix-appservice-node/issues/57))
+
+
 0.10.1 (2022-03-15)
 ====================
 

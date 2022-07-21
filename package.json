@@ -1,9 +1,12 @@
 {
   "name": "matrix-appservice",
-  "version": "0.10.1",
+  "version": "1.0.0",
   "description": "Matrix Application Service Framework",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "engines": {
+    "node": ">=14 <=18"
+  },
   "directories": {
     "test": "tests"
   },

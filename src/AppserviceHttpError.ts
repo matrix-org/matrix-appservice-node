@@ -2,7 +2,7 @@
  * Represents an HTTP error from the Appservice.
  * @category Error handling
  */
- export default class AppserviceHttpError extends Error {
+ export class AppserviceHttpError extends Error {
   /**
    * The Matrix error code
    */

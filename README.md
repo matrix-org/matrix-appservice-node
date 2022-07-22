@@ -51,7 +51,7 @@ as.onUserQuery = function(userId, callback) {
   if (userCreationOrQueryFailed) {
     throw new AppserviceHttpError(
       {
-        errorcode: "M_FORBIDDEN",
+        errcode: "M_FORBIDDEN",
         error: "User query or creation failed.",
       },
       403, // Forbidden, or an appropriate HTTP status

@@ -233,7 +233,7 @@ export class AppService extends EventEmitter {
             if (e instanceof AppserviceHttpError) {
                 res.status(e.status);
                 res.send({
-                    errcode: e.errorcode,
+                    errcode: e.errcode,
                     message: e.message,
                 });
             } else {

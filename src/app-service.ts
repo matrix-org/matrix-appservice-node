@@ -6,7 +6,7 @@ import { EventEmitter } from "events";
 import fs from "fs";
 import https from "https";
 import { Server, default as http } from "http";
-import { isMatrixHttpError } from "./MatrixHttpError";
+import { AppserviceHttpError } from "./AppserviceHttpError";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
@@ -230,7 +230,7 @@ export class AppService extends EventEmitter {
             await possiblePromise;
             res.send({});
         } catch (e: any) {
-            if (isMatrixHttpError(e)) {
+            if (e instanceof AppserviceHttpError) {
                 res.status(e.status);
                 res.send({
                     errcode: e.errorcode,

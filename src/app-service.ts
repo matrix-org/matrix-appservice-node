@@ -229,7 +229,7 @@ export class AppService extends EventEmitter {
         try {
             await possiblePromise;
             res.send({});
-        } catch (e: any) {
+        } catch (e) {
             if (e instanceof AppserviceHttpError) {
                 res.status(e.status);
                 res.send({

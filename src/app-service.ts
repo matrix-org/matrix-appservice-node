@@ -6,6 +6,7 @@ import { EventEmitter } from "events";
 import fs from "fs";
 import https from "https";
 import { Server, default as http } from "http";
+import { AppserviceHttpError } from "./AppserviceHttpError";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
@@ -229,10 +230,19 @@ export class AppService extends EventEmitter {
             await possiblePromise;
             res.send({});
         } catch (e) {
-            res.send({
-                errcode: "M_UNKNOWN",
-                error: e instanceof Error ? e.message : ""
-            });
+            if (e instanceof AppserviceHttpError) {
+                res.status(e.status);
+                res.send({
+                    errcode: e.errcode,
+                    message: e.message,
+                });
+            } else {
+                res.status(500);
+                res.send({
+                    errcode: "M_UNKNOWN",
+                    message: e instanceof Error ? e.message : "",
+                });    
+            }
         }
     }
 

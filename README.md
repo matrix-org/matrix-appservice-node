@@ -30,7 +30,7 @@ You only need to generate a registration once, provided the registration info do
 change. Once you have generated a registration, you can run the app service like so:
 
 ```javascript
-const { AppService } = require("matrix-appservice");
+import { AppService, AppserviceHttpError } from "matrix-appservice";
 // listening
 const as = new AppService({
   homeserverToken: "abcd653bac492087d3c87"
@@ -41,6 +41,24 @@ as.on("type:m.room.message", (event) => {
 as.onUserQuery = function(userId, callback) {
   // handle the incoming user query then respond
   console.log("RECV %s", userId);
+
+  /*
+  // if this userId cannot be created, or if some error
+  // conditions occur, throw AppserviceHttpError exception.
+  // The underlying appservice code will send the HTTP status,
+  // Matrix errorcode and error message back as a response.
+
+  if (userCreationOrQueryFailed) {
+    throw new AppserviceHttpError(
+      {
+        errcode: "M_FORBIDDEN",
+        error: "User query or creation failed.",
+      },
+      403, // Forbidden, or an appropriate HTTP status
+    )
+  }
+  */
+
   callback();
 };
 // can also do this as a promise

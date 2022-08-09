@@ -1,3 +1,18 @@
+1.1.0 (2022-08-09)
+==================
+
+Features
+--------
+
+- A subclass of the `AppService` class can now signal user query errors in its onUserQuery method by throwing an `AppserviceHttpError` exception. This allows the appservice to return a HTTP status, a Matrix errorcode, and a Matrix error message. ([\#56](https://github.com/matrix-org/matrix-appservice-node/issues/56))
+
+
+Internal Changes
+----------------
+
+- Add new CI workflow to check for signoffs. ([\#58](https://github.com/matrix-org/matrix-appservice-node/issues/58))
+
+
 1.0.0 (2022-07-20)
 ==================
 

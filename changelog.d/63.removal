@@ -1,0 +1,2 @@
+The legacy `/users`, `/rooms`, and `/transactions` endpoints have been removed in this release
+and now redirect to the appropriate spec'd path.

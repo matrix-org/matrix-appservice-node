@@ -86,13 +86,14 @@ export class AppService extends EventEmitter {
         app.use(bodyParser.json({
             limit: this.config.httpMaxSizeBytes || MAX_SIZE_BYTES,
         }));
-
+        const legacyEndpointHandler = (req: Request, res: Response) => {
+            res.status(308).location("/_matrix/app/v1" + req.originalUrl).send({ errcode: "M_UNKNOWN", error: "This non-standard endpoint has been removed" }) };
         app.get("/_matrix/app/v1/users/:userId", this.onGetUsers.bind(this));
         app.get("/_matrix/app/v1/rooms/:alias", this.onGetRoomAlias.bind(this));
         app.put("/_matrix/app/v1/transactions/:txnId", this.onTransaction.bind(this));
-        app.get("/users/:userId", this.onGetUsers.bind(this));
-        app.get("/rooms/:alias", this.onGetRoomAlias.bind(this));
-        app.put("/transactions/:txnId", this.onTransaction.bind(this));
+        app.get("/users/:userId", legacyEndpointHandler);
+        app.get("/rooms/:alias", legacyEndpointHandler);
+        app.put("/transactions/:txnId", legacyEndpointHandler);
         app.get("/health", this.onHealthCheck.bind(this));
 
         this.app = app;

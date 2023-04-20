@@ -1,22 +1,20 @@
 {
+  "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
     "incremental": true,
-    "target": "ES2017",
-    "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
     "declaration": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "outDir": "./lib",
     "composite": false,
-    "strict": true,
-    "esModuleInterop": true
+    "strictNullChecks": true,
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
-    "index.js"
+    "test/**/*",
   ],
   "typedocOptions": {
     "out": ".typedoc",

@@ -1,3 +1,20 @@
+2.0.0 (2023-04-21)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- The legacy `/users`, `/rooms`, and `/transactions` endpoints have been removed in this release
+  and now redirect to the appropriate spec'd path. ([\#63](https://github.com/matrix-org/matrix-appservice-node/issues/63))
+- Add support for Node 20, and drop support for Node 16. ([\#65](https://github.com/matrix-org/matrix-appservice-node/issues/65))
+
+
+Internal Changes
+----------------
+
+- Update the version of `express` to match that of `matrix-appservice-bridge`. ([\#60](https://github.com/matrix-org/matrix-appservice-node/issues/60))
+
+
 1.1.0 (2022-08-09)
 ==================
 

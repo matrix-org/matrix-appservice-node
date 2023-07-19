@@ -23,6 +23,7 @@ reg.setAppServiceToken(AppServiceRegistration.generateToken());
 reg.setSenderLocalpart("example-appservice");
 reg.addRegexPattern("users", "@.*", true);
 reg.setProtocols(["exampleservice"]); // For 3PID lookups
+reg.setId("example-service");
 reg.outputAsYaml("registration.yaml");
 ```
 

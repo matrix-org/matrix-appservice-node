@@ -10,6 +10,7 @@ import { AppserviceHttpError } from "./AppserviceHttpError";
 
 const MAX_SIZE_BYTES = 5000000; // 5MB
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export declare interface AppService {
     /**
      * Emitted when an event is pushed to the appservice.
@@ -57,6 +58,7 @@ export declare interface AppService {
     on(event: string, cb: (event: Record<string, unknown>) => void): this;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class AppService extends EventEmitter {
     /**
      * @deprecated Use `AppService.expressApp`

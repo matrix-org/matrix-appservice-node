@@ -1,3 +1,25 @@
+3.0.0 (2025-08-15)
+==================
+
+Improved Documentation
+----------------------
+
+- Fix the README's example script for creating an app service registration file. ([\#71](https://github.com/matrix-org/matrix-appservice-node/issues/71))
+
+
+Deprecations and Removals
+-------------------------
+
+- Drop support for Node 18 & 20, add support for Node 22 & 24. ([\#73](https://github.com/matrix-org/matrix-appservice-node/issues/73))
+
+
+Internal Changes
+----------------
+
+- Update semver from 7.3.7 to 7.5.4. ([\#69](https://github.com/matrix-org/matrix-appservice-node/issues/69))
+- Update word-wrap from 1.2.3 to 1.2.4. ([\#70](https://github.com/matrix-org/matrix-appservice-node/issues/70))
+
+
 2.0.0 (2023-04-21)
 ==================
 

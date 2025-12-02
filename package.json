@@ -28,7 +28,7 @@
   "dependencies": {
     "body-parser": "^1.20.3",
     "express": "^4.18.2",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "morgan": "^1.10.1"
   },
   "devDependencies": {

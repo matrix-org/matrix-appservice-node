@@ -13,8 +13,6 @@ jobs:
         with: # Needed for comparison
           fetch-depth: 0
       - uses: actions/setup-python@v2
-        with:
-          python-version: '3.12'
-      - run: pip install towncrier==22.8.0
+      - run: pip install towncrier>=23.6.0
       - name: ":newspaper: Newsfile"
         run: ./scripts/check-newsfragment

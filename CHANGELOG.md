@@ -1,3 +1,12 @@
+4.0.0 (2026-03-19)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- Drop support for Node 22, add support for Node 25, and refresh dependencies. ([\#74](https://github.com/matrix-org/matrix-appservice-node/issues/74))
+
+
 3.0.0 (2025-08-15)
 ==================
 

@@ -1,3 +1,11 @@
+# 4.0.1 (2026-04-02)
+
+## Internal Changes
+
+- Update path-to-regexp from 0.1.12 to 0.1.13. ([\#76](https://github.com/matrix-org/matrix-appservice-node/issues/76))
+- Update CI to use NPM Trusted Publishing. ([\#77](https://github.com/matrix-org/matrix-appservice-node/issues/77))
+
+
 4.0.0 (2026-03-19)
 ==================
 

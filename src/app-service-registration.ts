@@ -74,7 +74,7 @@ export class AppServiceRegistration {
     private senderLocalpart: string|null = null;
     private rateLimited: boolean|undefined = undefined;
     /**
-     * **Experimental**  
+     * @experimental
      * Signal to the homeserver that this appservice will accept ephemeral events.
      */
     public pushEphemeral: boolean|undefined = undefined;
@@ -196,8 +196,7 @@ export class AppServiceRegistration {
     }
 
     /**
-     * **Experimental**
-     * 
+     * @experimental
      * Should the appservice receive ephemeral events. Note this requires
      * a homeserver implementing MSC2409.
      */

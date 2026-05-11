@@ -1,0 +1,51 @@
+name: Build docs
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  docs:
+    runs-on: ubuntu-24.04
+    container: node:24
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Package Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - run: yarn --frozen-lockfile
+
+      - run: yarn gendoc
+
+      - name: Deploy v${{ steps.package-version.outputs.current-version }}
+        # This step will copy over generated docs to gh-pages branch, commit and publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          keep_files: true
+          publish_dir: ./.typedoc/
+          destination_dir: ./${{ steps.package-version.outputs.current-version }}
+          full_commit_message: Deploy ${{ steps.package-version.outputs.current-version }} to GitHub Pages
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+
+      # update the index file
+      - env:
+          CURRENT_VERSION: ${{ steps.package-version.outputs.current-version }}
+        run: node insert-new-version.js "${CURRENT_VERSION}"
+
+      - name: Commit updated index
+        uses: github-actions-x/commit@v2.9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: 'gh-pages'
+          commit-message: Publish v${{ steps.package-version.outputs.current-version }}
+          files: index.html
+          name: GitHub Actions
+          email: actions@github.com

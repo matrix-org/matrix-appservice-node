@@ -68,7 +68,6 @@ export class AppService extends EventEmitter {
     private lastProcessedTxnId = "";
     /**
      * Construct a new application service.
-     * @constructor
      * @param {Object} config Configuration for this service.
      * @param {String} config.homeserverToken The incoming HS token to expect. Must
      * be set prior to calling listen(port).

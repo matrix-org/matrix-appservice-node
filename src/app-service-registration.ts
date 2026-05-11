@@ -39,7 +39,6 @@ export class AppServiceRegistration {
 
         /**
      * Convert a JSON object to an AppServiceRegistration object.
-     * @static
      * @param obj The registration object
      * @return The registration.
      */
@@ -71,7 +70,6 @@ export class AppServiceRegistration {
 
     /**
      * Construct a new application service registration.
-     * @constructor
      * @param {string} appServiceUrl The base URL the AS can be reached via.
      */
     private id: string|null = null;

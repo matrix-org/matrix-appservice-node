@@ -37,7 +37,7 @@ export class AppServiceRegistration {
         return randomBytes(32).toString('hex');
     }
 
-        /**
+    /**
      * Convert a JSON object to an AppServiceRegistration object.
      * @param obj The registration object
      * @return The registration.

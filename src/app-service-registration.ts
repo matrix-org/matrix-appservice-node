@@ -68,10 +68,6 @@ export class AppServiceRegistration {
         return reg;
     }
 
-    /**
-     * Construct a new application service registration.
-     * @param {string} appServiceUrl The base URL the AS can be reached via.
-     */
     private id: string|null = null;
     private hsToken: string|null = null;
     private asToken: string|null = null;
@@ -89,6 +85,10 @@ export class AppServiceRegistration {
     } = {};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
+    /**
+     * Construct a new application service registration.
+     * @param url The base URL the AS can be reached via.
+     */
     constructor (private url: string|null) { }
 
     /**

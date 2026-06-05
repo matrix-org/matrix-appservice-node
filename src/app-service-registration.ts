@@ -37,9 +37,8 @@ export class AppServiceRegistration {
         return randomBytes(32).toString('hex');
     }
 
-        /**
+    /**
      * Convert a JSON object to an AppServiceRegistration object.
-     * @static
      * @param obj The registration object
      * @return The registration.
      */
@@ -69,18 +68,13 @@ export class AppServiceRegistration {
         return reg;
     }
 
-    /**
-     * Construct a new application service registration.
-     * @constructor
-     * @param {string} appServiceUrl The base URL the AS can be reached via.
-     */
     private id: string|null = null;
     private hsToken: string|null = null;
     private asToken: string|null = null;
     private senderLocalpart: string|null = null;
     private rateLimited: boolean|undefined = undefined;
     /**
-     * **Experimental**  
+     * @experimental
      * Signal to the homeserver that this appservice will accept ephemeral events.
      */
     public pushEphemeral: boolean|undefined = undefined;
@@ -91,6 +85,10 @@ export class AppServiceRegistration {
     } = {};
     private protocols: string[]|null = null;
     private cachedRegex: {[regextext: string]: RegExp} = {};
+    /**
+     * Construct a new application service registration.
+     * @param url The base URL the AS can be reached via.
+     */
     constructor (private url: string|null) { }
 
     /**
@@ -198,8 +196,7 @@ export class AppServiceRegistration {
     }
 
     /**
-     * **Experimental**
-     * 
+     * @experimental
      * Should the appservice receive ephemeral events. Note this requires
      * a homeserver implementing MSC2409.
      */

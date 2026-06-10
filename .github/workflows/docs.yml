@@ -10,7 +10,7 @@ permissions: {}
 jobs:
   docs:
     runs-on: ubuntu-24.04
-    container: node:24
+    container: node@sha256:8530f76a96d88820d288761f022e318970dda93d01536919fbc16076b7983e63 # 24
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:

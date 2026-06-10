@@ -20,6 +20,7 @@ jobs:
         with:
           node-version-file: .node-version
           registry-url: https://registry.npmjs.org/
+          package-manager-cache: false
       - name: Upgrade npm for Trusted Publishing
         run: npm i -g npm@latest
       - run: yarn --strict-semver --frozen-lockfile

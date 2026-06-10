@@ -5,6 +5,8 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   changelog:
     runs-on: ubuntu-24.04

@@ -5,6 +5,8 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   docs:
     runs-on: ubuntu-24.04

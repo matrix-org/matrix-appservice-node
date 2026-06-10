@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ develop ]
 
+permissions: {}
+
 jobs:
   lint:
    runs-on: ubuntu-24.04

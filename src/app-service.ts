@@ -287,7 +287,7 @@ export class AppService extends EventEmitter {
         const events = req.body.events || [];
         // Ephemeral events are delivered under the stable `ephemeral` key by
         // spec-compliant homeservers; fall back to the unstable MSC2409 key for
-        // older ones. See https://spec.matrix.org/v1.11/application-service-api/#put_matrixappv1transactionstxnid
+        // older ones. See https://spec.matrix.org/v1.13/application-service-api/#put_matrixappv1transactionstxnid
         const ephemeral = req.body.ephemeral || req.body["de.sorunome.msc2409.ephemeral"] || [];
 
         if (this.lastProcessedTxnId === txnId) {

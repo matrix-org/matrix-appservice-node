@@ -32,13 +32,17 @@ describe("AppService", () => {
             return received;
         }
 
+        function mockReceipt() {
+            return { type: "m.receipt", content: { "!e:example.org": { "m.read": { "@u:example.org": { ts: Date.now() } } } } };
+        }
+
         it("emits ephemeral events sent under the stable `ephemeral` key", () => {
-            const receipt = { type: "m.receipt", content: {} };
+            const receipt = mockReceipt();
             expect(receive({ ephemeral: [receipt] })).to.deep.equal([receipt]);
         });
 
         it("still emits ephemeral events under the unstable MSC2409 key", () => {
-            const receipt = { type: "m.receipt", content: {} };
+            const receipt = mockReceipt();
             expect(receive({ "de.sorunome.msc2409.ephemeral": [receipt] })).to.deep.equal([receipt]);
         });
 

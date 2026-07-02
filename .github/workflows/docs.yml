@@ -10,9 +10,9 @@ permissions: {}
 jobs:
   docs:
     runs-on: ubuntu-24.04
-    container: node@sha256:8530f76a96d88820d288761f022e318970dda93d01536919fbc16076b7983e63 # 24
+    container: node@sha256:fdddfb3e688158251943d52eba361de991548f6814007acba4917ae6b512d6be # 24
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
@@ -35,7 +35,7 @@ jobs:
           full_commit_message: Deploy ${{ steps.package-version.outputs.current-version }} to GitHub Pages
 
       - name: Checkout gh-pages
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: gh-pages
           persist-credentials: false

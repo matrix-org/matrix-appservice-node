@@ -1,0 +1,1 @@
+Read ephemeral events from the stable `ephemeral` transaction key, falling back to the unstable MSC2409 key. Fixes ephemeral events (typing, receipts, presence) being dropped from spec-compliant homeservers.

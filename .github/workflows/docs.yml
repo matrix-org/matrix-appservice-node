@@ -5,16 +5,20 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   docs:
-    runs-on: ubuntu-24.04
-    container: node:24
+    runs-on: ubuntu-latest
+    container: node@sha256:fdddfb3e688158251943d52eba361de991548f6814007acba4917ae6b512d6be # 24
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Get Package Version
         id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
+        uses: martinbeentjes/npm-get-version-action@3cf273023a0dda27efcd3164bdfb51908dd46a5b # v1.3.1
 
       - run: yarn --frozen-lockfile
 
@@ -22,7 +26,7 @@ jobs:
 
       - name: Deploy v${{ steps.package-version.outputs.current-version }}
         # This step will copy over generated docs to gh-pages branch, commit and publish
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           keep_files: true
@@ -31,9 +35,10 @@ jobs:
           full_commit_message: Deploy ${{ steps.package-version.outputs.current-version }} to GitHub Pages
 
       - name: Checkout gh-pages
-        uses: actions/checkout@v3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: gh-pages
+          persist-credentials: false
 
       # update the index file
       - env:
@@ -41,7 +46,7 @@ jobs:
         run: node insert-new-version.js "${CURRENT_VERSION}"
 
       - name: Commit updated index
-        uses: github-actions-x/commit@v2.9
+        uses: github-actions-x/commit@722d56b8968bf00ced78407bbe2ead81062d8baa # v2.9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           push-branch: 'gh-pages'

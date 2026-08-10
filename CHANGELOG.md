@@ -1,3 +1,18 @@
+# 4.1.0 (2026-08-10)
+
+## Bugfixes
+
+- Read ephemeral events from the stable `ephemeral` transaction key, falling back to the unstable MSC2409 key. Fixes ephemeral events (typing, receipts, presence) being dropped from spec-compliant homeservers. ([\#84](https://github.com/matrix-org/matrix-appservice-node/issues/84))
+
+## Internal Changes
+
+- Add support for Node 26, and refresh dependencies. ([\#78](https://github.com/matrix-org/matrix-appservice-node/issues/78))
+- Automate deployment of hosted documentation pages. ([\#79](https://github.com/matrix-org/matrix-appservice-node/issues/79))
+- Assign a name to the publish workflow. ([\#80](https://github.com/matrix-org/matrix-appservice-node/issues/80))
+- Analyze GitHub Actions with [zizmor](https://zizmor.sh/). ([\#81](https://github.com/matrix-org/matrix-appservice-node/issues/81))
+- Update and pin remote GitHub Actions and container images. ([\#81](https://github.com/matrix-org/matrix-appservice-node/issues/81))
+
+
 # 4.0.1 (2026-04-02)
 
 ## Internal Changes

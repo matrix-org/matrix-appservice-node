@@ -26,10 +26,10 @@
   "author": "matrix.org",
   "license": "Apache-2.0",
   "dependencies": {
-    "body-parser": "^1.20.4",
-    "express": "^4.22.1",
-    "js-yaml": "^4.1.1",
-    "morgan": "^1.10.1"
+    "body-parser": "^1.20.6",
+    "express": "^4.22.2",
+    "js-yaml": "^4.3.1",
+    "morgan": "^1.11.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24",
@@ -46,7 +46,7 @@
     "eslint": "^8.57.0",
     "mocha": "^11.0.0",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.28.9",
+    "typedoc": "^0.28.20",
     "typescript": "^5.9.3"
   }
 }
